@@ -21,7 +21,7 @@
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid.1865093909" name="CPU" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid" value="0" valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid.1016633804" name="Core" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid" value="0" valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.279987852" name="Board" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" value="genericBoard" valueType="string"/>
-							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1920880171" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Debug || true || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F030R8Tx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../Drivers/STM32F0xx_HAL_Driver/Inc | ../Drivers/CMSIS/Device/ST/STM32F0xx/Include | ../Drivers/CMSIS/Include | ../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy ||  ||  || STM32F030x8 | USE_FULL_LL_DRIVER | HSE_VALUE=8000000 | HSE_STARTUP_TIMEOUT=100 | LSE_STARTUP_TIMEOUT=5000 | LSE_VALUE=32768 | HSI_VALUE=8000000 | LSI_VALUE=40000 | VDD_VALUE=3300 | PREFETCH_ENABLE=1 | INSTRUCTION_CACHE_ENABLE=0 | DATA_CACHE_ENABLE=0 | USE_HAL_DRIVER ||  || Drivers | Core/Startup | Core ||  ||  || ${workspace_loc:/${ProjName}/STM32F030R8TX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1920880171" name="Defaults" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Debug || true || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F030R8Tx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../Drivers/STM32F0xx_HAL_Driver/Inc | ../Drivers/CMSIS/Device/ST/STM32F0xx/Include | ../Drivers/CMSIS/Include ||  ||  || STM32F030x8 | USE_FULL_LL_DRIVER | HSE_VALUE=8000000 | HSE_STARTUP_TIMEOUT=100 | LSE_STARTUP_TIMEOUT=5000 | LSE_VALUE=32768 | HSI_VALUE=8000000 | LSI_VALUE=40000 | VDD_VALUE=3300 | PREFETCH_ENABLE=1 | INSTRUCTION_CACHE_ENABLE=0 | DATA_CACHE_ENABLE=0 ||  || Drivers | Core/Startup | Core ||  ||  || ${workspace_loc:/${ProjName}/STM32F030R8TX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.debug.option.cpuclock.1378061549" superClass="com.st.stm32cube.ide.mcu.debug.option.cpuclock" value="48" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform.1362437034" isAbstract="false" osList="all" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform"/>
 							<builder buildPath="${workspace_loc:/JIGA_SAT_PE}/Debug" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder.1835955066" keepEnvironmentInBuildfile="false" managedBuildOn="true" name="Gnu Make Builder" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder"/>
@@ -49,14 +49,12 @@
 									<listOptionValue builtIn="false" value="PREFETCH_ENABLE=1"/>
 									<listOptionValue builtIn="false" value="INSTRUCTION_CACHE_ENABLE=0"/>
 									<listOptionValue builtIn="false" value="DATA_CACHE_ENABLE=0"/>
-									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.218763743" name="Include paths (-I)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Core/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F0xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F0xx/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1282654201" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
@@ -110,7 +108,7 @@
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid.1653187573" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_cpuid" value="0" valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid.921837033" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_coreid" value="0" valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board.1533136393" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.target_board" value="genericBoard" valueType="string"/>
-							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1137563891" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F030R8Tx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../Drivers/STM32F0xx_HAL_Driver/Inc | ../Drivers/CMSIS/Device/ST/STM32F0xx/Include | ../Drivers/CMSIS/Include | ../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy ||  ||  || STM32F030x8 | USE_FULL_LL_DRIVER | HSE_VALUE=8000000 | HSE_STARTUP_TIMEOUT=100 | LSE_STARTUP_TIMEOUT=5000 | LSE_VALUE=32768 | HSI_VALUE=8000000 | LSI_VALUE=40000 | VDD_VALUE=3300 | PREFETCH_ENABLE=1 | INSTRUCTION_CACHE_ENABLE=0 | DATA_CACHE_ENABLE=0 | USE_HAL_DRIVER ||  || Drivers | Core/Startup | Core ||  ||  || ${workspace_loc:/${ProjName}/STM32F030R8TX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
+							<option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults.1137563891" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.option.defaults" value="com.st.stm32cube.ide.common.services.build.inputs.revA.1.0.6 || Release || false || Executable || com.st.stm32cube.ide.mcu.gnu.managedbuild.option.toolchain.value.workspace || STM32F030R8Tx || 0 || 0 || arm-none-eabi- || ${gnu_tools_for_stm32_compiler_path} || ../Core/Inc | ../Drivers/STM32F0xx_HAL_Driver/Inc | ../Drivers/CMSIS/Device/ST/STM32F0xx/Include | ../Drivers/CMSIS/Include ||  ||  || STM32F030x8 | USE_FULL_LL_DRIVER | HSE_VALUE=8000000 | HSE_STARTUP_TIMEOUT=100 | LSE_STARTUP_TIMEOUT=5000 | LSE_VALUE=32768 | HSI_VALUE=8000000 | LSI_VALUE=40000 | VDD_VALUE=3300 | PREFETCH_ENABLE=1 | INSTRUCTION_CACHE_ENABLE=0 | DATA_CACHE_ENABLE=0 ||  || Drivers | Core/Startup | Core ||  ||  || ${workspace_loc:/${ProjName}/STM32F030R8TX_FLASH.ld} || true || NonSecure ||  || secure_nsclib.o ||  || None ||  ||  || " valueType="string"/>
 							<option id="com.st.stm32cube.ide.mcu.debug.option.cpuclock.967857239" superClass="com.st.stm32cube.ide.mcu.debug.option.cpuclock" value="48" valueType="string"/>
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform.481767293" isAbstract="false" osList="all" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.targetplatform"/>
 							<builder buildPath="${workspace_loc:/JIGA_SAT_PE}/Release" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder.1964059848" managedBuildOn="true" name="Gnu Make Builder.Release" parallelBuildOn="true" parallelizationNumber="optimal" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.builder"/>
@@ -134,14 +132,12 @@
 									<listOptionValue builtIn="false" value="PREFETCH_ENABLE=1"/>
 									<listOptionValue builtIn="false" value="INSTRUCTION_CACHE_ENABLE=0"/>
 									<listOptionValue builtIn="false" value="DATA_CACHE_ENABLE=0"/>
-									<listOptionValue builtIn="false" value="USE_HAL_DRIVER"/>
 								</option>
 								<option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths.579618880" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.option.includepaths" valueType="includePath">
 									<listOptionValue builtIn="false" value="../Core/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/STM32F0xx_HAL_Driver/Inc"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32F0xx/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="../Drivers/STM32F0xx_HAL_Driver/Inc/Legacy"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.427008261" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

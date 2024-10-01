@@ -9,16 +9,6 @@
 
 #define sl_tasks_data_vector_default_value           \
 {                                                    \
-  {/*00-loop*/                                       \
-    loop_1ms_clock,               SL_STATUS_ENABLED, \
-    loop_init,                    SL_STATUS_ENABLED, \
-    loop_update,                  SL_STATUS_ENABLED, \
-    loop_deinit,                  SL_STATUS_ENABLED, \
-    loop_pexecution_rate_1ms_timer,                  \
-    LOOP_EXECUTION_RATE_1MS_TIME,                    \
-    SL_STATUS_ENABLED                                \
-  }                                                  \
-  ,                                                  \
   {/*06-app*/                                        \
     app_1ms_clock,                SL_STATUS_ENABLED, \
     app_init,                     SL_STATUS_ENABLED, \

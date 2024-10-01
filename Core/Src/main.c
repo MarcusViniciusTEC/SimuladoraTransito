@@ -67,13 +67,16 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-   __disable_irq();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+  LL_APB1_GRP2_EnableClock(LL_APB1_GRP2_PERIPH_SYSCFG);
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
+
+  /* SysTick_IRQn interrupt configuration */
+  NVIC_SetPriority(SysTick_IRQn, 3);
 
   /* USER CODE BEGIN Init */
 
@@ -83,14 +86,14 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
-
+  LL_SYSTICK_EnableIT();
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
-   sl_init();
+  //  sl_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -98,7 +101,7 @@ int main(void)
   while (1)
   {
 
-    sl_update();
+    // sl_update();
     //hmi_led_long_pulse(1,1);
     /* USER CODE END WHILE */
 
@@ -154,13 +157,8 @@ void SystemClock_Config(void)
   {
 
   }
+  LL_Init1msTick(48000000);
   LL_SetSystemCoreClock(48000000);
-
-   /* Update the time base */
-  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
-  {
-    Error_Handler();
-  }
 }
 
 /**
@@ -376,27 +374,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
-
-/**
-  * @brief  Period elapsed callback in non blocking mode
-  * @note   This function is called  when TIM6 interrupt took place, inside
-  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
-  * a global variable "uwTick" used as application time base.
-  * @param  htim : TIM handle
-  * @retval None
-  */
-void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
-{
-  /* USER CODE BEGIN Callback 0 */
-
-  /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
-    HAL_IncTick();
-  }
-  /* USER CODE BEGIN Callback 1 */
-
-  /* USER CODE END Callback 1 */
-}
 
 /**
   * @brief  This function is executed in case of error occurrence.

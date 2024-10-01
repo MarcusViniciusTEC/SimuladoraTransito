@@ -45,7 +45,7 @@ ${PROJ_PATH}/App/Middleware/SuperLoop/sl.c
 ${PROJ_PATH}/App/Application/Src/app.c
 #${PROJ_PATH}/App/Application/Src/app_mapevents.c
 # ${PROJ_PATH}/App/Application/Src/din.c
-${PROJ_PATH}/App/Application/Src/loop.c
+# ${PROJ_PATH}/App/Application/Src/loop.c
 ${PROJ_PATH}/App/Application/Src/hmi.c
 # ${PROJ_PATH}/App/Application/Src/tmp.c
 # ${PROJ_PATH}/App/Application/Src/wdt.c
@@ -58,28 +58,11 @@ ${PROJ_PATH}/Core/Src/stm32f0xx_it.c
 ${PROJ_PATH}/Core/Src/sysmem.c 
 ${PROJ_PATH}/Core/Src/syscalls.c 
 ${PROJ_PATH}/Core/Src/system_stm32f0xx.c
-${PROJ_PATH}/Core/Src/stm32f0xx_hal_timebase_tim.c
 # ${PROJ_PATH}/Core/Src/usart.c
-
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_cortex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_dma.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_exti.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash_ex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_flash.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_gpio.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c_ex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_i2c.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr_ex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_pwr.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc_ex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_rcc.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim_ex.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal_tim.c
-${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_hal.c
 
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_utils.c 
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_rcc.c
-#${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_pwr.c
+${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_pwr.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_gpio.c
 ${PROJ_PATH}/Drivers/STM32F0xx_HAL_Driver/Src/stm32f0xx_ll_exti.c
 

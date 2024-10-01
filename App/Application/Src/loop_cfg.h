@@ -1,0 +1,33 @@
+#ifndef __LOOP_CFG_H__
+#define __LOOP_CFG_H__
+
+#include "main.h"
+
+#define DOUT_NUMBER_OF_OUTPUTS 4
+
+#define dout_pininfo_vector_default_value \
+{                                         \
+  {/*LOOP_IN_1*/                          \
+    .GPIO    = LP_1_DET_Port,             \
+    .PinMask = LP_1_DET_Pin               \
+  }                                       \
+  ,                                       \
+  {/*LOOP_OUT_1*/                         \
+    .GPIO    = LP_2_DET_Port,             \
+    .PinMask = LP_2_DET_Pin               \
+  }                                       \
+  ,                                       \
+  {/*LOOP_IN_2*/                          \
+    .GPIO    = LP_3_DET_Port,             \
+    .PinMask = LP_3_DET_Pin               \
+  }                                       \
+  ,                                       \
+  {/*LOOP_OUT_2*/                         \
+    .GPIO    = LP_4_DET_Port,             \
+    .PinMask = LP_4_DET_Pin               \
+  }                                       \
+}
+
+
+
+#endif

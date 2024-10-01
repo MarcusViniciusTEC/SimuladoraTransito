@@ -1,0 +1,15 @@
+{
+    "cmake.configureOnOpen": true,
+    "cmake.additionalCompilerSearchDirs": [
+        "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32",
+        "C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin"
+    ],
+    "cmake.buildEnvironment": {
+         "PATH": "C:\\\\Windows\\\\system32;C:\\ST\\STM32CubeCLT\\GNU-tools-for-STM32\\bin"
+    },
+    "files.associations": {
+        "sl.h": "c",
+        "sl_cfg.h": "c"
+    }
+
+}

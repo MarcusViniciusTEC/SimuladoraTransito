@@ -40,19 +40,15 @@ set(sources_SRCS
 
 ${PROJ_PATH}/App/Middleware/SuperLoop/sl_lib.c
 ${PROJ_PATH}/App/Middleware/SuperLoop/sl.c
+
+
 ${PROJ_PATH}/App/Application/Src/loop.c
 ${PROJ_PATH}/App/Application/Src/piezo.c
 ${PROJ_PATH}/App/Application/Src/app.c
-#${PROJ_PATH}/App/Application/Src/app_mapevents.c
-# ${PROJ_PATH}/App/Application/Src/din.c
-
 ${PROJ_PATH}/App/Application/Src/hmi.c
-# ${PROJ_PATH}/App/Application/Src/tmp.c
-# ${PROJ_PATH}/App/Application/Src/wdt.c
 ${PROJ_PATH}/App/Application/Src/wlog.c
 
 
-        
 ${PROJ_PATH}/Core/Src/main.c
 ${PROJ_PATH}/Core/Src/stm32f0xx_it.c
 ${PROJ_PATH}/Core/Src/sysmem.c 

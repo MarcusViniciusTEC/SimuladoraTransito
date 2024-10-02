@@ -55,12 +55,11 @@
 //#include "mb.h"
 //#include "tmp.h"
 //#include "din.h"
-#include "loop.h"
 
 #include "app.h"
 #include "hmi.h"
 #include "wlog.h"
-
+#include "loop.h"
 
 /******************************************************************************/
 

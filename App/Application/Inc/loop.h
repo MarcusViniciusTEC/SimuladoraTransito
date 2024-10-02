@@ -3,9 +3,6 @@
 
 
 #include "sl.h"
-#include "loop_types.h"
-
-
 
 extern volatile uint32_t loop_execution_rate_1ms_timer;
 

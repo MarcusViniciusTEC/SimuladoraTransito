@@ -46,6 +46,15 @@
     LOOP_EXECUTION_RATE_1MS_TIME,                    \
     SL_STATUS_ENABLED                                \
   },                                                 \
+  {/*07-piezo*/                                      \
+    piezo_1ms_clock,               SL_STATUS_ENABLED,\
+    piezo_init,                    SL_STATUS_ENABLED,\
+    piezo_update,                  SL_STATUS_ENABLED,\
+    piezo_deinit,                  SL_STATUS_ENABLED,\
+    piezo_pexecution_rate_1ms_timer,                 \
+    PIEZO_EXECUTION_RATE_1MS_TIME,                   \
+    SL_STATUS_ENABLED                                \
+  }                                                  \
 }
 /******************************************************************************/
 
@@ -60,6 +69,7 @@
 #include "hmi.h"
 #include "wlog.h"
 #include "loop.h"
+#include "piezo.h"
 
 /******************************************************************************/
 

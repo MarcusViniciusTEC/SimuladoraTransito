@@ -93,7 +93,7 @@ int main(void)
   MX_GPIO_Init();
   /* USER CODE BEGIN 2 */
 
-  //  sl_init();
+  sl_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -101,24 +101,13 @@ int main(void)
   while (1)
   {
 
-    // sl_update();
-    //hmi_led_long_pulse(1,1);
+    sl_update();
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
 
-    
-    //LL_GPIO_seOutputPin
 
-    //hmi_led_turn_on(0);
-
-     //hmi_led_short_pulse(1,5);
-    //if(LL_GPIO_IsInputPinSet(nMODE_ID_1_GPIO_Port, nMODE_ID_1_Pin))LL_GPIO_SetOutputPin(SENSE_1_LED_GPIO_Port, SENSE_1_LED_Pin);
-    //else LL_GPIO_ResetOutputPin(SENSE_1_LED_GPIO_Port, SENSE_1_LED_Pin);
-
-    //LL_GPIO_SetOutputPin(SENSE_1_LED_GPIO_Port, SENSE_1_LED_Pin);
-    //LL_GPIO_ResetOutputPin(SENSE_1_LED_GPIO_Port, SENSE_1_LED_Pin);
-    
   }
   /* USER CODE END 3 */
 }

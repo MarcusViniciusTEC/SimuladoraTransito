@@ -3,9 +3,9 @@
 
 #include "main.h"
 
-#define DOUT_NUMBER_OF_OUTPUTS 4
+#define LOOP_NUMBER_OF_OUTPUTS 4
 
-#define dout_pininfo_vector_default_value \
+#define loop_pininfo_vector_default_value \
 {                                         \
   {/*LOOP_IN_1*/                          \
     .GPIO    = LP_1_DET_Port,             \

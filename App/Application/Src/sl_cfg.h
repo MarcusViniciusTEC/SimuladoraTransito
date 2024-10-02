@@ -5,6 +5,7 @@
 
 #define SL_NUMBER_OF_TASKS                          4
 
+
 /******************************************************************************/
 
 #define sl_tasks_data_vector_default_value           \
@@ -17,8 +18,7 @@
     app_pexecution_rate_1ms_timer,                   \
     APP_EXECUTION_RATE_1MS_TIME,                     \
     SL_STATUS_ENABLED                                \
-  }                                                  \
-  ,                                                  \
+  },                                                 \
   {/*07-hmi*/                                        \
     hmi_1ms_clock,                SL_STATUS_ENABLED, \
     hmi_init,                     SL_STATUS_ENABLED, \
@@ -27,8 +27,7 @@
     hmi_pexecution_rate_1ms_timer,                   \
     HMI_EXECUTION_RATE_1MS_TIME,                     \
     SL_STATUS_ENABLED                                \
-  }                                                  \
-  ,                                                  \
+  },                                                 \
   {/*08-wlog*/                                       \
     wlog_1ms_clock,               SL_STATUS_ENABLED, \
     wlog_init,                    SL_STATUS_ENABLED, \
@@ -37,7 +36,16 @@
     wlog_pexecution_rate_1ms_timer,                  \
     WLOG_EXECUTION_RATE_1MS_TIME,                    \
     SL_STATUS_ENABLED                                \
-  }                                                  \
+  },                                                 \
+  {/*06-loop*/                                       \
+    loop_1ms_clock,               SL_STATUS_ENABLED, \
+    loop_init,                    SL_STATUS_ENABLED, \
+    loop_update,                  SL_STATUS_ENABLED, \
+    loop_deinit,                  SL_STATUS_ENABLED, \
+    loop_pexecution_rate_1ms_timer,                  \
+    LOOP_EXECUTION_RATE_1MS_TIME,                    \
+    SL_STATUS_ENABLED                                \
+  },                                                 \
 }
 /******************************************************************************/
 
@@ -47,11 +55,12 @@
 //#include "mb.h"
 //#include "tmp.h"
 //#include "din.h"
+#include "loop.h"
 
 #include "app.h"
 #include "hmi.h"
 #include "wlog.h"
-#include "loop.h"
+
 
 /******************************************************************************/
 

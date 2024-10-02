@@ -8,22 +8,22 @@
 #define loop_pininfo_vector_default_value \
 {                                         \
   {/*LOOP_IN_1*/                          \
-    .GPIO    = LP_1_DET_Port,             \
-    .PinMask = LP_1_DET_Pin               \
+    .GPIO    = LP_1_DET_GPIO_Port,        \
+    .PinMask = LP_1_DET_Pin,              \
   }                                       \
   ,                                       \
   {/*LOOP_OUT_1*/                         \
-    .GPIO    = LP_2_DET_Port,             \
-    .PinMask = LP_2_DET_Pin               \
+    .GPIO    = LP_2_DET_GPIO_Port,        \
+    .PinMask = LP_2_DET_Pin,              \
   }                                       \
   ,                                       \
   {/*LOOP_IN_2*/                          \
-    .GPIO    = LP_3_DET_Port,             \
-    .PinMask = LP_3_DET_Pin               \
+    .GPIO    = LP_3_DET_GPIO_Port,        \
+    .PinMask = LP_3_DET_Pin,              \
   }                                       \
   ,                                       \
   {/*LOOP_OUT_2*/                         \
-    .GPIO    = LP_4_DET_Port,             \
+    .GPIO    = LP_4_DET_GPIO_Port,        \
     .PinMask = LP_4_DET_Pin               \
   }                                       \
 }

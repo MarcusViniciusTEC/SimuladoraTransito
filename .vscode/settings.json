@@ -10,7 +10,7 @@
     "files.associations": {
         "sl.h": "c",
         "sl_cfg.h": "c",
-
+        "piezo.h": "c"
     }
 
 }

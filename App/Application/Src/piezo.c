@@ -10,6 +10,24 @@ static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_OUTPUTS] = pie
 
 /******************************************************************************/
 
+void piezo_turn_on(uint8_t index)
+{
+    piezo_pininfo_t piezo_pininfo;
+    piezo_pininfo = piezo_pininfo_vector[index];
+    LL_GPIO_SetOutputPin(piezo_pininfo.GPIO, piezo_pininfo.PinMask);
+}
+
+/******************************************************************************/
+
+void piezo_turn_off(uint8_t index)
+{
+    piezo_pininfo_t piezo_pininfo;
+    piezo_pininfo = piezo_pininfo_vector[index];
+    LL_GPIO_ResetOutputPin(piezo_pininfo.GPIO, piezo_pininfo.PinMask);
+}
+
+/******************************************************************************/
+
 void piezo_1ms_clock(void)
 {
 

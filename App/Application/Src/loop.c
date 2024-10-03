@@ -28,11 +28,29 @@ typedef enum
 
 }loop_states_t;
 
+
+typedef enum
+{
+    LOOP_PULSE_ON = 0,
+    LOOP_PULSE_OFF
+
+}loop_states_pulse_t;
+
+typedef enum
+{
+  LOOP_CH1 = 0,
+  LOOP_CH2,
+  LOOP_CH3,
+  LOOP_NUMBER_OF_CHANNELS
+
+}loop_channes_t;
+
 typedef struct
 {
-  uint32_t loop_delay_init;
-  uint32_t loop_period_turn_on;
-  uint32_t number_of_cycles;
+  loop_states_pulse_t state;
+  uint16_t loop_delay_init;
+  uint16_t loop_period_turn_on;
+  uint16_t number_of_cycles;
 
 }loop_pin_data_t;
 
@@ -45,7 +63,7 @@ typedef struct
 
 
 
-static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_OUTPUTS] = loop_pininfo_vector_default_value;
+static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_CHANNELS] = loop_pininfo_vector_default_value;
 
 loop_apply_state_t loop_apply_state;
   
@@ -81,23 +99,28 @@ void loop_init_apply(void)
 
 /******************************************************************************/
 
-void loop_pulse(void)
+void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters)
 {
-
+  loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_pin_data_parameters.loop_delay_init;
+  loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_pin_data_parameters.loop_period_turn_on;
+  loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
+  loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
 }
 
+/******************************************************************************/
 
-void loop_apply_update_state(void)
-{
-
-
-}
 
 /******************************************************************************/
 
 void loop_1ms_period_loop(void)
 {
-  
+  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
+  {
+    if(loop_apply_state.loop_pin[loop_index].loop_period_turn_on > 0)
+    {
+      loop_apply_state.loop_pin[loop_index].loop_period_turn_on--;
+    }
+  }
 
 }
 
@@ -106,14 +129,56 @@ void loop_1ms_period_loop(void)
 void loop_1ms_delay_loop(void)
 {
 
+  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
+  {
+    if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0)
+    {
+      loop_apply_state.loop_pin[loop_index].loop_delay_init--;
+    }
+  }
 
 }
+
+
+
+void loop_apply_update_state(uint8_t pin_index)
+{
+  switch (loop_apply_state.loop_pin[pin_index].state)
+  {
+  case LOOP_PULSE_ON:
+  
+  if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
+  {
+    
+
+  }else
+  {
+    //loop_turn_on(loop_apply_state.loop_pin[pin_index]);
+  }
+
+    
+  break;
+
+  case LOOP_PULSE_OFF:
+  
+  
+  break;
+
+  default:
+    break;
+  }
+
+
+}
+
+
 
 /******************************************************************************/
 
 void loop_1ms_clock(void)
 {
-
+  loop_1ms_delay_loop();
+  loop_1ms_period_loop();
 }     
 
 /******************************************************************************/

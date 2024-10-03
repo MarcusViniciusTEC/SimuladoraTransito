@@ -17,8 +17,9 @@ void loop_pulse();
 void loop_init_apply(void);
 void loop_1ms_period_loop(void);
 void loop_1ms_delay_loop(void);
+//void loop_received_parameters(uint8_t index )
 
-void loop_apply_update_state(void);
+//void loop_apply_update_state(void);
 
 void loop_1ms_clock(void);              
 void loop_init(void);                   

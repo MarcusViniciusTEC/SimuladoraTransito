@@ -10,6 +10,15 @@ extern volatile uint32_t loop_execution_rate_1ms_timer;
 
 #define LOOP_EXECUTION_RATE_1MS_TIME    	        0
 
+void piezo_turn_on(uint8_t index);
+void piezo_turn_off(uint8_t index);
+
+void loop_pulse();
+void loop_init_apply(void);
+void loop_1ms_period_loop(void);
+void loop_1ms_delay_loop(void);
+
+void loop_apply_update_state(void);
 
 void loop_1ms_clock(void);              
 void loop_init(void);                   

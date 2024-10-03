@@ -29,20 +29,18 @@ typedef enum
 
 }loop_states_t;
 
-typedef enum
+typedef struct
 {
-  LOOP_ON = 1,
-  LOOP_OFF
+  uint32_t loop_delay_init;
+  uint32_t loop_period_turn_on;
+  uint32_t cycles;
 
-}loop_data_t;
+}loop_pin_data_t;
 
 typedef struct
 {
-  uint8_t loop_pin[LOOP_NUMBER_OF_OUTPUTS];
-  uint32_t loop_delay_init;
-  uint32_t loop_period;
-  uint32_t cycles;
-  loop_data_t loop_state;
+  loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS];
+  loop_states_t loop_state;
 
 }loop_apply_state_t;
 
@@ -86,37 +84,13 @@ void loop_init_apply(void)
 
 void loop_pulse(void)
 {
-  //loop_apply_state.loop_pin[2];
-  loop_apply_state.loop_delay_init = 10;
-  loop_apply_state.loop_period = 10;
-  loop_apply_state.cycles = 2;
 
 }
 
 
 void loop_apply_update_state(void)
 {
-  if(loop_apply_state.loop_state)
-  {
-    if(loop_apply_state.cycles > 0)
-    {
-      if(loop_apply_state.cycles < 2)
-      {
-       // loop_turn_on(loop_apply_state.loop_pin);
-        //sl_critical_assign(, led_1ms_timer)
 
-      }
-      else
-      {
-
-      }
-
-      loop_apply_state.cycles--;
-
-
-
-    } 
-  }
 
 }
 
@@ -134,35 +108,27 @@ void loop_1ms_delay_loop(void)
 {
 
 
-
 }
 
 /******************************************************************************/
 
 void loop_1ms_clock(void)
 {
-  if(loop_states = LOOP_STATE_RUNNING)
-  {
-    loop_1ms_delay_loop();
-    loop_1ms_period_loop();
-  }
+
 }     
 
 /******************************************************************************/
 
 void loop_init(void)
 {
-  loop_init_apply();
-  hmi_led_turn_on(1);
+
 }              
 
 /******************************************************************************/
 
 void loop_update(void)
 {
-  loop_apply_update_state();
-  loop_pulse();
-  loop_states = LOOP_STATE_RUNNING;
+
 }            
 
 /******************************************************************************/

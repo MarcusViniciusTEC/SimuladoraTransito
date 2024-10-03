@@ -12,7 +12,7 @@ typedef struct
       uint32_t  PinMask;
 } loop_pininfo_t;
 
-static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_OUTPUTS] = loop_pininfo_vector_default_value;
+ static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_OUTPUTS] = loop_pininfo_vector_default_value;
 
 /******************************************************************************/
 

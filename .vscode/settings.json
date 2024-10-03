@@ -10,10 +10,7 @@
     "files.associations": {
         "sl.h": "c",
         "sl_cfg.h": "c",
-        "loop.h": "c",
-        "loop_types.h": "c",
-        "piezo_types.h": "c",
-        "piezo_cfg.h": "c"
+
     }
 
 }

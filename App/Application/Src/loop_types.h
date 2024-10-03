@@ -8,7 +8,7 @@ typedef struct
 {
   GPIO_TypeDef *GPIO;
       uint32_t  PinMask;
-} dout_pininfo_t;
+} loop_pininfo_t;
 
 
 #endif

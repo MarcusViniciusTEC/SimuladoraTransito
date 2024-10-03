@@ -9,23 +9,23 @@
 #define piezo_pininfo_vector_default_value  \
 {                                           \
   {/*PIEZO_IN_ROD_1*/                       \
-    .GPIO    = DXPZ_1_GPIO_Port             \
-    .PinMask = DXPZ_1_Pin                   \
+    .GPIO    = DXPZ_1_GPIO_Port,            \
+    .PinMask = DXPZ_1_Pin,                  \
   }                                         \
   ,                                         \
   {/*PIEZO_OUT_ROD_1*/                      \
-    .GPIO    = DXPZ_1_GPIO_Port             \
-    .PinMask = DXPZ_1_Pin                   \
+    .GPIO    = DXPZ_1_GPIO_Port,            \
+    .PinMask = DXPZ_1_Pin,                  \
   }                                         \
   ,                                         \
   {/*PIEZO_IN_2*/                           \
-    .GPIO    = DWPZ_1_GPIO_Port             \
-    .PinMask = DWPZ_1_Pin                   \
+    .GPIO    = DWPZ_1_GPIO_Port,            \
+    .PinMask = DWPZ_1_Pin,                  \
   }                                         \
   ,                                         \
   {/*PEIZO_OUT_2*/                          \
-    .GPIO    = DWPZ_1_GPIO_Port             \
-    .PinMask = DWPZ_1_Pin                   \
+    .GPIO    = DWPZ_1_GPIO_Port,            \
+    .PinMask = DWPZ_1_Pin,                  \
   }                                         \
 }
 

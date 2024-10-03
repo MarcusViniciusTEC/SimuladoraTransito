@@ -20,7 +20,6 @@ typedef struct
       uint32_t  PinMask;
 } loop_pininfo_t;
 
-
 typedef enum
 {
   LOOP_STATE_INIT = 0,
@@ -33,13 +32,13 @@ typedef struct
 {
   uint32_t loop_delay_init;
   uint32_t loop_period_turn_on;
-  uint32_t cycles;
+  uint32_t number_of_cycles;
 
 }loop_pin_data_t;
 
 typedef struct
 {
-  loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS];
+  loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS];  // criar enum
   loop_states_t loop_state;
 
 }loop_apply_state_t;

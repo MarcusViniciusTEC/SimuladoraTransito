@@ -54,9 +54,22 @@ typedef struct
 
 }loop_pin_data_t;
 
+
 typedef struct
 {
-  loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS];  // criar enum
+  loop_states_pulse_t state;
+  uint16_t loop_delay_init;
+  uint16_t loop_period_turn_on;
+  uint16_t number_of_cycles;
+
+}test_loop_t;
+
+test_loop_t  test_loop;
+
+
+typedef struct
+{
+  loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS]; 
   loop_states_t loop_state;
 
 }loop_apply_state_t;
@@ -105,6 +118,8 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
   loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_pin_data_parameters.loop_period_turn_on;
   loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
   loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
+
+  loop_apply_update_state(pin_index);
 }
 
 /******************************************************************************/
@@ -146,21 +161,37 @@ void loop_apply_update_state(uint8_t pin_index)
   switch (loop_apply_state.loop_pin[pin_index].state)
   {
   case LOOP_PULSE_ON:
-  
   if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
   {
-    
+    loop_apply_state.loop_pin[pin_index].number_of_cycles --;
+    if(loop_apply_state.loop_pin[pin_index].loop_delay_init == 0)
+    {
+      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 1000)
+      loop_turn_on(pin_index);
+      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 500)
+      loop_turn_off(pin_index);
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
+
+    }
+    else
+    {
+      loop_turn_on(pin_index);
+      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 500)
+      loop_turn_off(pin_index);
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
+    }
 
   }else
   {
-    //loop_turn_on(loop_apply_state.loop_pin[pin_index]);
+    loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
   }
-
-    
   break;
 
   case LOOP_PULSE_OFF:
-  
+
+  loop_turn_off(pin_index);
   
   break;
 
@@ -185,7 +216,7 @@ void loop_1ms_clock(void)
 
 void loop_init(void)
 {
-
+  loop_init_apply();
 }              
 
 /******************************************************************************/

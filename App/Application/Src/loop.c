@@ -28,14 +28,6 @@ typedef enum
 
 }loop_states_t;
 
-
-typedef enum
-{
-    LOOP_PULSE_ON = 0,
-    LOOP_PULSE_OFF
-
-}loop_states_pulse_t;
-
 typedef enum
 {
   LOOP_CH1 = 0,
@@ -45,19 +37,32 @@ typedef enum
 
 }loop_channes_t;
 
+typedef enum
+{
+  LOOP_UPDATE_STATE_INIT = 0,
+  LOOP_UPDATE_STATE_START,
+  LOOP_UPDATE_NUMBER_OF_CYCLES,
+  LOOP_UPDATE_DELAY_INIT,
+  LOOP_UPDATE_RUNNING,
+  LOOP_UPDATE_TURN_ON,
+  LOOP_UPDATE_PERIOD,
+  LOOP_UPDATE_TURN_OFF,
+  LOOP_UPDATE_SUCESS
+
+}loop_state_update_t;
+
 typedef struct
 {
-  loop_states_pulse_t state;
+  loop_state_update_t state;
   uint16_t loop_delay_init;
   uint16_t loop_period_turn_on;
   uint16_t number_of_cycles;
 
 }loop_pin_data_t;
 
-
 typedef struct
 {
-  loop_states_pulse_t state;
+  loop_state_update_t state;
   uint16_t loop_delay_init;
   uint16_t loop_period_turn_on;
   uint16_t number_of_cycles;
@@ -70,17 +75,15 @@ test_loop_t  test_loop;
 typedef struct
 {
   loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS]; 
-  loop_states_t loop_state;
+  loop_state_update_t loop_state;
 
 }loop_apply_state_t;
-
-
 
 static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_CHANNELS] = loop_pininfo_vector_default_value;
 
 loop_apply_state_t loop_apply_state;
   
-loop_states_t loop_states = LOOP_STATE_INIT;
+//loop_states_t loop_states = LOOP_STATE_INIT;
 
 /******************************************************************************/
 
@@ -119,7 +122,7 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
   loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
   loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
 
-  loop_apply_update_state(pin_index);
+  //loop_apply_update_state(pin_index);
 }
 
 /******************************************************************************/
@@ -154,55 +157,92 @@ void loop_1ms_delay_loop(void)
 
 }
 
-
+/******************************************************************************/
 
 void loop_apply_update_state(uint8_t pin_index)
 {
+
   switch (loop_apply_state.loop_pin[pin_index].state)
   {
-  case LOOP_PULSE_ON:
-  if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
-  {
-    loop_apply_state.loop_pin[pin_index].number_of_cycles --;
-    if(loop_apply_state.loop_pin[pin_index].loop_delay_init == 0)
-    {
-      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 1000)
+    case  LOOP_STATE_INIT :
+
+
+    case LOOP_UPDATE_STATE_START:
+
+      if(loop_apply_state.loop_pin[pin_index].state == 1) 
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_NUMBER_OF_CYCLES; 
+      }
+      break;
+
+    case LOOP_UPDATE_NUMBER_OF_CYCLES:
+
+      if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
+      {
+        loop_apply_state.loop_pin[pin_index].number_of_cycles--;
+        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_RUNNING;
+      }
+      else
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_INIT;
+      }
+      break;
+
+    case LOOP_UPDATE_RUNNING:
+
+      if(loop_apply_state.loop_pin[pin_index].loop_delay_init > 0)
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_DELAY_INIT;
+      }
+      else
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_ON;
+      }
+      break;
+
+    case  LOOP_UPDATE_DELAY_INIT:
+
+      if(loop_apply_state.loop_pin[pin_index].loop_delay_init == 0)
+        {
+          loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_ON;
+        }
+      break;
+
+    case LOOP_UPDATE_TURN_ON:
+
       loop_turn_on(pin_index);
-      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 500)
+      hmi_led_turn_on(pin_index);
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
+      break;
+
+    case LOOP_UPDATE_PERIOD:
+
+      if(loop_apply_state.loop_pin[pin_index].loop_period_turn_on == 0)
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_OFF;
+      }
+      break;  
+
+    case LOOP_UPDATE_TURN_OFF:
+
       loop_turn_off(pin_index);
+      hmi_led_turn_off(pin_index);
 
-      loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_SUCESS;
+      break;
 
-    }
-    else
-    {
-      loop_turn_on(pin_index);
-      sl_critical_assign(loop_apply_state.loop_pin[pin_index].loop_delay_init, 500)
-      loop_turn_off(pin_index);
+    case LOOP_UPDATE_SUCESS:
 
-      loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
-    }
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
+      break;
 
-  }else
-  {
-    loop_apply_state.loop_pin[pin_index].state = LOOP_PULSE_OFF;
+    default :
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
+      break;
   }
-  break;
-
-  case LOOP_PULSE_OFF:
-
-  loop_turn_off(pin_index);
-  
-  break;
-
-  default:
-    break;
-  }
-
-
 }
-
-
 
 /******************************************************************************/
 

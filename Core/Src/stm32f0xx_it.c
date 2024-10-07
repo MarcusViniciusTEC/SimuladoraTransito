@@ -129,10 +129,12 @@ void SysTick_Handler(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 
-  sl_1ms_clock();
+ 
 
   /* USER CODE END SysTick_IRQn 0 */
   /* USER CODE BEGIN SysTick_IRQn 1 */
+
+   sl_1ms_clock();
 
   /* USER CODE END SysTick_IRQn 1 */
 }

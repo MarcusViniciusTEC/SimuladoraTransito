@@ -139,14 +139,12 @@ void loop_1ms_period_loop(void)
       loop_apply_state.loop_pin[loop_index].loop_period_turn_on--;
     }
   }
-
 }
 
 /******************************************************************************/
 
 void loop_1ms_delay_loop(void)
 {
-
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
     if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0)
@@ -154,7 +152,6 @@ void loop_1ms_delay_loop(void)
       loop_apply_state.loop_pin[loop_index].loop_delay_init--;
     }
   }
-
 }
 
 /******************************************************************************/
@@ -166,12 +163,17 @@ void loop_apply_update_state(uint8_t pin_index)
   {
     case  LOOP_STATE_INIT :
 
-
+      break;
+  
     case LOOP_UPDATE_STATE_START:
 
-      if(loop_apply_state.loop_pin[pin_index].state == 1) 
+      if(loop_apply_state.loop_pin[pin_index].state == LOOP_UPDATE_STATE_START) 
       {
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_NUMBER_OF_CYCLES; 
+      }
+      else 
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_INIT; 
       }
       break;
 
@@ -263,7 +265,16 @@ void loop_init(void)
 
 void loop_update(void)
 {
+  uint8_t index_test;
+  static uint8_t init = 1;
 
+  for( index_test = 0; index_test < LOOP_NUMBER_OF_OUTPUTS; index_test++)
+  {
+    loop_apply_state.loop_pin[index_test].loop_delay_init = 100;
+    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 200;
+    loop_apply_state.loop_pin[index_test].number_of_cycles = 2;
+    loop_apply_state.loop_pin[index_test].state = init ;
+  }
 }            
 
 /******************************************************************************/

@@ -75,7 +75,7 @@ test_loop_t  test_loop;
 typedef struct
 {
   loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS]; 
-  loop_state_update_t loop_state;
+  loop_states_t loop_state;
 
 }loop_apply_state_t;
 
@@ -161,11 +161,14 @@ void loop_apply_update_state(uint8_t pin_index)
 
   switch (loop_apply_state.loop_pin[pin_index].state)
   {
-    case  LOOP_STATE_INIT :
+    case  LOOP_UPDATE_STATE_INIT :
 
       break;
   
     case LOOP_UPDATE_STATE_START:
+
+
+      hmi_led_turn_off(2);
 
       if(loop_apply_state.loop_pin[pin_index].state == LOOP_UPDATE_STATE_START) 
       {
@@ -173,7 +176,7 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       else 
       {
-        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_INIT; 
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT; 
       }
       break;
 
@@ -182,11 +185,12 @@ void loop_apply_update_state(uint8_t pin_index)
       if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
       {
         loop_apply_state.loop_pin[pin_index].number_of_cycles--;
-        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_RUNNING;
+         hmi_led_turn_on(pin_index);
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_RUNNING;
       }
       else
       {
-        loop_apply_state.loop_pin[pin_index].state = LOOP_STATE_INIT;
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
       }
       break;
 
@@ -212,8 +216,8 @@ void loop_apply_update_state(uint8_t pin_index)
 
     case LOOP_UPDATE_TURN_ON:
 
-      loop_turn_on(pin_index);
-      hmi_led_turn_on(pin_index);
+      loop_turn_on(1);
+      hmi_led_turn_on(1);
 
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
       break;
@@ -228,20 +232,27 @@ void loop_apply_update_state(uint8_t pin_index)
 
     case LOOP_UPDATE_TURN_OFF:
 
-      loop_turn_off(pin_index);
-      hmi_led_turn_off(pin_index);
+      hmi_led_turn_off(1);
+      hmi_led_turn_on(2);
 
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_SUCESS;
       break;
 
     case LOOP_UPDATE_SUCESS:
 
-      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
+      if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_NUMBER_OF_CYCLES;
+      } 
+      else 
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
+      }
       break;
 
     default :
 
-      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
       break;
   }
 }
@@ -250,31 +261,51 @@ void loop_apply_update_state(uint8_t pin_index)
 
 void loop_1ms_clock(void)
 {
-  loop_1ms_delay_loop();
-  loop_1ms_period_loop();
+ // loop_1ms_delay_loop();
+  //loop_1ms_period_loop();
+
+ if(loop_apply_state.loop_pin[1].loop_delay_init> 0) loop_apply_state.loop_pin[1].loop_delay_init--;
+ if(loop_apply_state.loop_pin[1].loop_period_turn_on > 0) loop_apply_state.loop_pin[1].loop_period_turn_on--;
 }     
 
 /******************************************************************************/
 
+uint8_t index_test;
+
 void loop_init(void)
 {
-  loop_init_apply();
+  //loop_init_apply();
+  static uint8_t init = 1;
+
+  for(index_test = 0; index_test < LOOP_NUMBER_OF_OUTPUTS; index_test++)
+  {
+    loop_apply_state.loop_pin[index_test].loop_delay_init = 100;
+    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 200;
+    loop_apply_state.loop_pin[index_test].number_of_cycles = 10;
+    loop_apply_state.loop_pin[index_test].state = init ;
+  }
+
+  loop_apply_state.loop_state = LOOP_STATE_RUNNING;
 }              
 
 /******************************************************************************/
 
 void loop_update(void)
 {
-  uint8_t index_test;
-  static uint8_t init = 1;
-
-  for( index_test = 0; index_test < LOOP_NUMBER_OF_OUTPUTS; index_test++)
+  switch (loop_apply_state.loop_state)
   {
-    loop_apply_state.loop_pin[index_test].loop_delay_init = 100;
-    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 200;
-    loop_apply_state.loop_pin[index_test].number_of_cycles = 2;
-    loop_apply_state.loop_pin[index_test].state = init ;
-  }
+    case LOOP_STATE_INIT:
+    
+      break;
+
+    case LOOP_STATE_RUNNING:
+
+      loop_apply_update_state(1);
+      break;
+  
+  default:
+    break;
+  }  
 }            
 
 /******************************************************************************/

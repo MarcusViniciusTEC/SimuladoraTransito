@@ -26,7 +26,7 @@ typedef enum
   LOOP_STATE_RUNNING,
   LOOP_NUMBER_OF_STATES
 
-}loop_states_t;
+}loop_data_t;
 
 typedef enum
 {
@@ -40,6 +40,7 @@ typedef enum
 typedef enum
 {
   LOOP_UPDATE_STATE_INIT = 0,
+  LOOP_UPDATE_GET_DELAY,
   LOOP_UPDATE_STATE_START,
   LOOP_UPDATE_NUMBER_OF_CYCLES,
   LOOP_UPDATE_DELAY_INIT,
@@ -47,13 +48,15 @@ typedef enum
   LOOP_UPDATE_TURN_ON,
   LOOP_UPDATE_PERIOD,
   LOOP_UPDATE_TURN_OFF,
-  LOOP_UPDATE_SUCESS
+  LOOP_UPDATE_TIME,
+  LOOP_UPDATE_STATE_SUCESS
 
 }loop_state_update_t;
 
 typedef struct
 {
   loop_state_update_t state;
+  uint16_t time_between_cycles;
   uint16_t loop_delay_init;
   uint16_t last_loop_delay_init;
   uint16_t loop_period_turn_on;
@@ -64,20 +67,8 @@ typedef struct
 
 typedef struct
 {
-  loop_state_update_t state;
-  uint16_t loop_delay_init;
-  uint16_t loop_period_turn_on;
-  uint16_t number_of_cycles;
-
-}test_loop_t;
-
-test_loop_t  test_loop;
-
-
-typedef struct
-{
   loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS]; 
-  loop_states_t loop_state;
+  loop_data_t loop_state;
 
 }loop_apply_state_t;
 
@@ -156,13 +147,36 @@ void loop_1ms_delay_loop(void)
   }
 }
 
-/******************************************************************************/
+/******************************************************************
+ * 
+ * _______________________
+ * |                     |
+ * |                     |
+ * |                     |____________________________
+ *
+ *             _________________________
+ *             |                       |
+ *             |                       |
+ * ____________|                       |_______________
+ * 
+ * |-------------|---------------------|----------------
+ *  DELAY INIT       PERIOD               DELAY RESTART == (DELAY INIT + (PERIODO/2))
+ * 
+ * 
+ * ****************************************************************/
+
+
 
 void loop_apply_update_state(uint8_t pin_index)
 {
   switch (loop_apply_state.loop_pin[pin_index].state)
-  {
-    case  LOOP_UPDATE_STATE_INIT :
+  { 
+    case LOOP_STATE_INIT:
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_GET_DELAY; 
+      break;
+
+    case  LOOP_UPDATE_GET_DELAY :
 
       loop_apply_state.loop_pin[pin_index].last_loop_delay_init = loop_apply_state.loop_pin[pin_index].loop_delay_init;
       loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
@@ -190,7 +204,7 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       else
       {
-        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       }
       break;
 
@@ -216,7 +230,7 @@ void loop_apply_update_state(uint8_t pin_index)
 
     case LOOP_UPDATE_TURN_ON:
 
-      hmi_led_short_pulse(pin_index+1, HMI_BLNK_AUTO_RESTART_OFF);
+      hmi_led_turn_on(pin_index-1);
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
       break;
 
@@ -230,24 +244,29 @@ void loop_apply_update_state(uint8_t pin_index)
 
     case LOOP_UPDATE_TURN_OFF:
       
-      hmi_led_short_pulse(pin_index, HMI_BLNK_AUTO_RESTART_OFF);
-      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_SUCESS;
+      hmi_led_turn_off(pin_index-1);
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TIME;
       break;
 
-    case LOOP_UPDATE_SUCESS:
+    case LOOP_UPDATE_TIME:
 
+      loop_apply_state.loop_pin[pin_index].number_of_cycles--;
       if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
       {
-        loop_apply_state.loop_pin[pin_index].number_of_cycles--;
         loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_apply_state.loop_pin[pin_index].last_loop_delay_init;
         loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on;
 
-        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_NUMBER_OF_CYCLES;
       } 
       else 
       {
-       // loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START;
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_SUCESS;
       }
+      break;
+
+      case LOOP_UPDATE_STATE_SUCESS:
+
+
       break;
 
     default :
@@ -258,40 +277,44 @@ void loop_apply_update_state(uint8_t pin_index)
 }
 
 /******************************************************************************/
+uint8_t index_test;
+
 
 void loop_1ms_clock(void)
 {
- // loop_1ms_delay_loop();
-  //loop_1ms_period_loop();
-
- if(loop_apply_state.loop_pin[1].loop_delay_init> 0) loop_apply_state.loop_pin[1].loop_delay_init--;
- if(loop_apply_state.loop_pin[1].loop_period_turn_on > 0) loop_apply_state.loop_pin[1].loop_period_turn_on--;
+  loop_1ms_delay_loop();
+  loop_1ms_period_loop();
 }     
 
 /******************************************************************************/
 
-uint8_t index_test;
+
 
 void loop_init(void)
 {
   //loop_init_apply();
   static uint8_t init = 0;
 
-  for(index_test = 0; index_test < LOOP_NUMBER_OF_OUTPUTS; index_test++)
-  {
-    loop_apply_state.loop_pin[index_test].loop_delay_init = 100;
-    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 700;
-    loop_apply_state.loop_pin[index_test].number_of_cycles = 10;
-    loop_apply_state.loop_pin[index_test].state = init ;
-  }
+  loop_apply_state.loop_pin[1].loop_delay_init = 400;
+  loop_apply_state.loop_pin[1].loop_period_turn_on = 800;
+  loop_apply_state.loop_pin[1].number_of_cycles = 20;
+  loop_apply_state.loop_pin[1].state = init ;
 
-  loop_apply_state.loop_state = LOOP_STATE_RUNNING;
+  loop_apply_state.loop_pin[2].loop_delay_init = 0;
+  loop_apply_state.loop_pin[2].loop_period_turn_on = 800;
+  loop_apply_state.loop_pin[2].number_of_cycles = 20;
+  loop_apply_state.loop_pin[2].state = init ;
+  
+
+ loop_apply_state.loop_state = LOOP_STATE_RUNNING;
 }              
 
 /******************************************************************************/
 
 void loop_update(void)
 {
+
+  static uint16_t i = 0;
   switch (loop_apply_state.loop_state)
   {
     case LOOP_STATE_INIT:
@@ -300,7 +323,16 @@ void loop_update(void)
 
     case LOOP_STATE_RUNNING:
 
-      loop_apply_update_state(1);
+
+    //loop_apply_update_state(1);
+    loop_apply_update_state(2);
+
+  // if(loop_apply_state.loop_pin[2].state  == 0)loop_apply_update_state(1);
+  // if(loop_apply_state.loop_pin[1].state  == LOOP_UPDATE_STATE_SUCESS)loop_apply_update_state(2);
+     
+   
+    
+
       break;
   
   default:

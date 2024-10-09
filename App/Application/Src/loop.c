@@ -209,16 +209,14 @@ void loop_apply_update_state(uint8_t pin_index)
     case  LOOP_UPDATE_DELAY_INIT:
 
       if(loop_apply_state.loop_pin[pin_index].loop_delay_init == 0)
-        {
-          loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_ON;
-        }
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_ON;
+      }
       break;
 
     case LOOP_UPDATE_TURN_ON:
 
-      hmi_led_short_pulse(pin_index, 0);
-      //hmi_led_turn_off(pin_index);
-
+      hmi_led_short_pulse(pin_index+1, HMI_BLNK_AUTO_RESTART_OFF);
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
       break;
 
@@ -231,10 +229,8 @@ void loop_apply_update_state(uint8_t pin_index)
       break;  
 
     case LOOP_UPDATE_TURN_OFF:
-
       
-      hmi_led_short_pulse(pin_index+1, 0);
-
+      hmi_led_short_pulse(pin_index, HMI_BLNK_AUTO_RESTART_OFF);
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_SUCESS;
       break;
 
@@ -284,7 +280,7 @@ void loop_init(void)
   for(index_test = 0; index_test < LOOP_NUMBER_OF_OUTPUTS; index_test++)
   {
     loop_apply_state.loop_pin[index_test].loop_delay_init = 100;
-    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 200;
+    loop_apply_state.loop_pin[index_test].loop_period_turn_on = 700;
     loop_apply_state.loop_pin[index_test].number_of_cycles = 10;
     loop_apply_state.loop_pin[index_test].state = init ;
   }

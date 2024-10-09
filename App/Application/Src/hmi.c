@@ -265,6 +265,7 @@ static void hmi_led_update(uint32_t next_mask)
   for(uint8_t led_index = 0; led_index < HMI_NUMBER_OF_LEDS; led_index++)
   {
 	hmi_blnk_update(led_index);
+  //hmi_blnk_update();
 
     uint32_t led_mask = (uint32_t)( 1 << led_index );
     if((hmi_data.led.mask ^ next_mask) & led_mask)
@@ -310,7 +311,7 @@ void hmi_1ms_clock(void)
 
 void hmi_init(void)
 {
-  hmi_blnk_init();
+ // hmi_blnk_init();
   hmi_led_init();
 
   hmi_data.state = HMI_STATE_INIT;

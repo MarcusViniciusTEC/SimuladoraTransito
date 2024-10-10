@@ -18,8 +18,33 @@ static volatile hmi_data_t hmi_data;
 /******************************************************************************/
 
 static const hmi_pininfo_t hmi_led_pininfo_vector[HMI_NUMBER_OF_LEDS] = hmi_led_pininfo_vector_default_value;
+static const hmi_pininfo_t hm_led_pininfo_loop_vector[HMI_NUMBER_LOOP_LEDS] = hmi_led_pininfo_vector_loop_value;
+
 
 /******************************************************************************/
+
+void hmi_turn_on_led_loop(uint8_t led_index)
+{
+  hmi_pininfo_t led_pininfo;
+
+  led_pininfo = hm_led_pininfo_loop_vector[led_index];
+  LL_GPIO_SetOutputPin(led_pininfo.GPIO, led_pininfo.PinMask);
+}
+
+
+/******************************************************************************/
+
+void hmi_turn_off_led_loop(uint8_t led_index)
+{
+  hmi_pininfo_t led_pininfo;
+
+  led_pininfo = hm_led_pininfo_loop_vector[led_index];
+  LL_GPIO_ResetOutputPin(led_pininfo.GPIO, led_pininfo.PinMask);
+}
+
+
+/******************************************************************************/
+
 
 static void hmi_turn_on_led_pin(uint8_t led_index)
 {

@@ -14,7 +14,8 @@ extern volatile uint32_t hmi_execution_rate_1ms_timer;
 #define HMI_EXECUTION_RATE_1MS_TIME    		100
 
 /******************************************************************************/
-
+void hmi_turn_on_led_loop(uint8_t led_index);
+void hmi_turn_off_led_loop(uint8_t led_index);
 void hmi_led_turn_on(uint8_t led_index);
 void hmi_led_turn_off(uint8_t led_index);
 void hmi_led_toggle(uint8_t led_index);

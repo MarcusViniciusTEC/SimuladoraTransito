@@ -23,6 +23,7 @@
 /******************************************************************************/
 
 #define HMI_NUMBER_OF_LEDS 					6
+#define HMI_NUMBER_LOOP_LEDS        4
 
 #define hmi_led_pininfo_vector_default_value \
 {                                            \
@@ -56,6 +57,30 @@
     .PinMask = SENSE_6_LED_Pin,              \
   }                                          \
 }
+
+#define hmi_led_pininfo_vector_loop_value         \
+{                                                 \
+  {/*00*/                                         \
+    .GPIO = SENSE_1_LED_GPIO_Port,                \
+    .PinMask = SENSE_1_LED_Pin,                   \
+  }                                               \
+  ,                                               \
+  {/*02*/                                         \
+    .GPIO = SENSE_3_LED_GPIO_Port,                \
+    .PinMask = SENSE_3_LED_Pin,                   \
+  }                                               \
+  ,                                               \
+  {/*03*/                                         \
+    .GPIO = SENSE_4_LED_GPIO_Port,                \
+    .PinMask = SENSE_4_LED_Pin,                   \
+  }                                               \    
+  ,                                               \
+  {/*05*/                                         \
+    .GPIO = SENSE_6_LED_GPIO_Port,                \
+    .PinMask = SENSE_6_LED_Pin,                   \
+  }                                               \
+}
+
 
 /******************************************************************************/
 

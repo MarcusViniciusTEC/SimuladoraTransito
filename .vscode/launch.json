@@ -12,7 +12,7 @@
       "name": "Debug J-Link",
       "cwd": "${workspaceRoot}",
       "executable": "${command:cmake.launchTargetPath}",
-      "serverpath": "C:/Program Files/SEGGER/JLink/JLinkGDBServerCL.exe",
+      "serverpath": "C:/Program Files/SEGGER/JLink_V796c/JLinkGDBServerCL.exe",
       "servertype": "jlink",
       "device": "STM32F030R8Tx",
       "interface": "swd",

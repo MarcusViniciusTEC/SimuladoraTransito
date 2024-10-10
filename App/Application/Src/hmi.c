@@ -309,43 +309,43 @@ void hmi_1ms_clock(void)
 
 void hmi_init(void)
 {
-  hmi_blnk_init();
-  hmi_led_init();
+  // hmi_blnk_init();
+  // hmi_led_init();
 
-  hmi_data.state = HMI_STATE_INIT;
+  // hmi_data.state = HMI_STATE_INIT;
 }
 
 /******************************************************************************/
 
 void hmi_update(void)
 {
-  uint32_t next_mask;
+  // uint32_t next_mask;
 
-  next_mask = hmi_data.led.next_mask;
-  hmi_led_update(next_mask);
+  // next_mask = hmi_data.led.next_mask;
+  // hmi_led_update(next_mask);
 
-  switch(hmi_data.state)
-  {
-    case HMI_STATE_INIT:
-	  if(hmi_blnk_get_state(HMI_NUMBER_OF_LEDS - 1) == HMI_BLNK_STATE_DONE)
-	  {
-		hmi_blnk_turn_leds_off();
-		hmi_blnk_heartbeat_led();
-		hmi_data.state = HMI_STATE_RUNNING;
-	  }
-	  break;
+  // switch(hmi_data.state)
+  // {
+  //   case HMI_STATE_INIT:
+	//   if(hmi_blnk_get_state(HMI_NUMBER_OF_LEDS - 1) == HMI_BLNK_STATE_DONE)
+	//   {
+	// 	hmi_blnk_turn_leds_off();
+	// 	hmi_blnk_heartbeat_led();
+	// 	hmi_data.state = HMI_STATE_RUNNING;
+	//   }
+	//   break;
 
-    case HMI_STATE_RUNNING:
-	  break;
+  //   case HMI_STATE_RUNNING:
+	//   break;
 
-    default:
-	  break;
-  }
+  //   default:
+	//   break;
+  // }
 
-  if(next_mask != hmi_data.led.mask)
-  {
-	hmi_data.led.mask = next_mask;
-  }
+  // if(next_mask != hmi_data.led.mask)
+  // {
+	// hmi_data.led.mask = next_mask;
+  // }
 }
 
 /******************************************************************************/

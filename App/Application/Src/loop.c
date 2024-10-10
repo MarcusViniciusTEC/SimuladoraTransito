@@ -56,12 +56,12 @@ typedef enum
 typedef struct
 {
   loop_state_update_t state;
-  uint16_t time_restart_between_cycles;
-  uint16_t last_time_restart_between_cycles;
-  uint16_t loop_delay_init;
-  uint16_t last_loop_delay_init;
-  uint16_t loop_period_turn_on;
-  uint16_t last_loop_period_turn_on;
+  uint32_t time_restart_between_cycles;
+  uint32_t last_time_restart_between_cycles;
+  uint32_t loop_delay_init;
+  uint32_t last_loop_delay_init;
+  uint32_t loop_period_turn_on;
+  uint32_t last_loop_period_turn_on;
   uint16_t number_of_cycles;
 
 }loop_pin_data_t;
@@ -121,16 +121,6 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
 
 /******************************************************************************/
 
-void loop_1ms_delay_restart(void)
-{
-  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
-  {
-    if(loop_apply_state.loop_pin[loop_index].time_restart_between_cycles > 0)
-    {
-      loop_apply_state.loop_pin[loop_index].time_restart_between_cycles--;
-    }
-  }
-}
 
 /******************************************************************************/
 
@@ -138,7 +128,7 @@ void loop_1ms_period_loop(void)
 {
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
-    if(loop_apply_state.loop_pin[loop_index].loop_period_turn_on > 0)
+    if(loop_apply_state.loop_pin[loop_index].loop_period_turn_on > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_PERIOD)
     {
       loop_apply_state.loop_pin[loop_index].loop_period_turn_on--;
     }
@@ -151,12 +141,24 @@ void loop_1ms_delay_loop(void)
 {
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
-    if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0)
+    if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_INIT)
     {
       loop_apply_state.loop_pin[loop_index].loop_delay_init--;
     }
   }
 }
+
+void loop_1ms_delay_restart(void)
+{
+  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
+  {
+    if(loop_apply_state.loop_pin[loop_index].time_restart_between_cycles > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES)
+    {
+      loop_apply_state.loop_pin[loop_index].time_restart_between_cycles--;
+    }
+  }
+}
+
 
 /******************************************************************
  * 
@@ -184,12 +186,15 @@ void loop_apply_update_state(uint8_t pin_index)
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_GET_DELAY; 
       break;
     case  LOOP_UPDATE_GET_DELAY :
+
       loop_apply_state.loop_pin[pin_index].last_loop_delay_init = loop_apply_state.loop_pin[pin_index].loop_delay_init;
       loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
       loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles = loop_apply_state.loop_pin[pin_index].time_restart_between_cycles;
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START; 
       break;
+
     case LOOP_UPDATE_STATE_START:
+
       if(loop_apply_state.loop_pin[pin_index].state == LOOP_UPDATE_STATE_START) 
       {
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_NUMBER_OF_CYCLES; 
@@ -199,7 +204,9 @@ void loop_apply_update_state(uint8_t pin_index)
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT; 
       }
       break;
+
     case LOOP_UPDATE_NUMBER_OF_CYCLES:
+
       if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
       {
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_RUNNING;
@@ -209,7 +216,9 @@ void loop_apply_update_state(uint8_t pin_index)
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       }
       break;
+
     case LOOP_UPDATE_RUNNING:
+
       if(loop_apply_state.loop_pin[pin_index].loop_delay_init > 0)
       {
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_DELAY_INIT;
@@ -220,12 +229,15 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       break;
     case  LOOP_UPDATE_DELAY_INIT:
+
       if(loop_apply_state.loop_pin[pin_index].loop_delay_init == 0)
       {
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_ON;
       }
       break;
+
     case LOOP_UPDATE_TURN_ON:
+
       hmi_led_turn_on(pin_index-1);
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
       break;
@@ -235,6 +247,7 @@ void loop_apply_update_state(uint8_t pin_index)
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TURN_OFF;
       }
       break;  
+
     case LOOP_UPDATE_TURN_OFF:
 
       hmi_led_turn_off(pin_index-1);
@@ -242,26 +255,21 @@ void loop_apply_update_state(uint8_t pin_index)
       break;
 
     case LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES:
-      if(loop_apply_state.loop_pin[pin_index].last_loop_delay_init == 0)
-        {
-          if(loop_apply_state.loop_pin[pin_index].time_restart_between_cycles == 0)
-          {
-            loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TIME;      
-          }
-        }
-        else
-        {
-          loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TIME;
-        }
+
+      if(loop_apply_state.loop_pin[pin_index].time_restart_between_cycles == 0)
+      {
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_TIME;    
+      }  
       break;
+
     case LOOP_UPDATE_TIME:
       loop_apply_state.loop_pin[pin_index].number_of_cycles--;
       if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
       {
         loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_apply_state.loop_pin[pin_index].last_loop_delay_init;
         loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on;
-        loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles;
-        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES;
+        loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles;  
+        loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_SUCESS;
       } 
       else 
       {
@@ -287,7 +295,7 @@ void loop_1ms_clock(void)
   loop_1ms_delay_loop();
   loop_1ms_period_loop();
   loop_1ms_delay_restart();
-}     
+}  
 
 /******************************************************************************/
 
@@ -298,16 +306,29 @@ void loop_init(void)
   //loop_init_apply();
   static uint8_t init = 0;
 
-  loop_apply_state.loop_pin[1].loop_delay_init = 400;
-  loop_apply_state.loop_pin[1].loop_period_turn_on = 800;
-  loop_apply_state.loop_pin[1].number_of_cycles = 20;
+  // loop_apply_state.loop_pin[0].loop_delay_init = 0;
+  // loop_apply_state.loop_pin[0].loop_period_turn_on = 300;
+  // loop_apply_state.loop_pin[0].time_restart_between_cycles = 300;
+  // loop_apply_state.loop_pin[0].number_of_cycles = 1;
+  // loop_apply_state.loop_pin[0].state = init ;
+
+  loop_apply_state.loop_pin[1].loop_delay_init = 150;
+  loop_apply_state.loop_pin[1].loop_period_turn_on = 300;
+  loop_apply_state.loop_pin[1].time_restart_between_cycles = 0;
+  loop_apply_state.loop_pin[1].number_of_cycles = 1;
   loop_apply_state.loop_pin[1].state = init ;
 
   loop_apply_state.loop_pin[2].loop_delay_init = 0;
-  loop_apply_state.loop_pin[2].loop_period_turn_on = 800;
-  loop_apply_state.loop_pin[2].number_of_cycles = 20;
-  loop_apply_state.loop_pin[2].time_restart_between_cycles = 600;
+  loop_apply_state.loop_pin[2].loop_period_turn_on = 300;
+  loop_apply_state.loop_pin[2].time_restart_between_cycles = 300;
+  loop_apply_state.loop_pin[2].number_of_cycles = 1;
   loop_apply_state.loop_pin[2].state = init ;
+
+  loop_apply_state.loop_pin[3].loop_delay_init = 150;
+  loop_apply_state.loop_pin[3].loop_period_turn_on = 300;
+  loop_apply_state.loop_pin[3].time_restart_between_cycles = 0;
+  loop_apply_state.loop_pin[3].number_of_cycles = 1;
+  loop_apply_state.loop_pin[3].state = init ;
   
 
  loop_apply_state.loop_state = LOOP_STATE_RUNNING;
@@ -328,8 +349,10 @@ void loop_update(void)
     case LOOP_STATE_RUNNING:
 
 
-    //loop_apply_update_state(1);
+    //loop_apply_update_state(0);
+   // loop_apply_update_state(1);
     loop_apply_update_state(2);
+    loop_apply_update_state(3);
 
   // if(loop_apply_state.loop_pin[2].state  == 0)loop_apply_update_state(1);
   // if(loop_apply_state.loop_pin[1].state  == LOOP_UPDATE_STATE_SUCESS)loop_apply_update_state(2);

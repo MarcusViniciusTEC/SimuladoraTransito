@@ -234,8 +234,8 @@ void piezo_init(void)
 {
    // piezo_init_pin();
   piezo_apply_state.piezo_pin[0].delay_init = 0;
-  piezo_apply_state.piezo_pin[0].period_turn_on = 200;
-  piezo_apply_state.piezo_pin[0].time_restart_between_cycles = 1500;
+  piezo_apply_state.piezo_pin[0].period_turn_on = 10;
+  piezo_apply_state.piezo_pin[0].time_restart_between_cycles = 1000;
   piezo_apply_state.piezo_pin[0].number_of_cycles = 1000;
   piezo_apply_state.piezo_pin[0].state = 0 ;
 
@@ -246,8 +246,8 @@ void piezo_init(void)
   piezo_apply_state.piezo_pin[1].state = 0 ;
 
   piezo_apply_state.piezo_pin[2].delay_init = 0;
-  piezo_apply_state.piezo_pin[2].period_turn_on = 200;
-  piezo_apply_state.piezo_pin[2].time_restart_between_cycles = 1500;
+  piezo_apply_state.piezo_pin[2].period_turn_on = 400;
+  piezo_apply_state.piezo_pin[2].time_restart_between_cycles = 1000;
   piezo_apply_state.piezo_pin[2].number_of_cycles = 1000;
   piezo_apply_state.piezo_pin[2].state = 0 ;
 
@@ -265,9 +265,9 @@ void piezo_init(void)
 void piezo_update(void)
 {
     piezo_update_parameters(0, PIEZO_MODE_PE);
-    piezo_update_parameters(1, PIEZO_MODE_PE);
-    piezo_update_parameters(2, PIEZO_MODE_PE);
-    piezo_update_parameters(3, PIEZO_MODE_PE);
+    //piezo_update_parameters(1, PIEZO_MODE_PE);
+   // piezo_update_parameters(2, PIEZO_MODE_PE);
+   // piezo_update_parameters(3, PIEZO_MODE_PE);
 
     //hmi_led_turn_on(0);
 }                

@@ -26,6 +26,10 @@
 
 volatile uint32_t loop_execution_rate_1ms_timer;
 
+#define LOOP_LED_LOOP_0         0
+#define LOOP_LED_LOOP_1         2
+#define LOOP_LED_LOOP_2         3
+#define LOOP_LED_LOOP_3         5
 typedef enum
 {
   LOOP_AUTO_RESTART_OFF = 0,
@@ -48,10 +52,10 @@ typedef enum
 
 typedef enum
 {
-  LOOP_CH1 = 0,
+  LOOP_CH0 = 0,
+  LOOP_CH1,
   LOOP_CH2,
   LOOP_CH3,
-  LOOP_CH4,
   LOOP_NUMBER_OF_CHANNELS
 
 }loop_channes_t;
@@ -133,10 +137,9 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
 {
   loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_pin_data_parameters.loop_delay_init;
   loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_pin_data_parameters.loop_period_turn_on;
+  loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_pin_data_parameters.time_restart_between_cycles;
   loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
   loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
-
-  //loop_apply_update_state(pin_index);
 }
 
 /******************************************************************************/
@@ -176,6 +179,27 @@ void loop_1ms_delay_restart(void)
     {
       loop_apply_state.loop_pin[loop_index].time_restart_between_cycles--;
     }
+  }
+}
+
+uint8_t control_led_loop(uint8_t led_index)
+{
+  switch (led_index)
+  {
+    case LOOP_CH0:
+      return LOOP_LED_LOOP_0;
+      break;
+    case LOOP_CH1:
+      return LOOP_LED_LOOP_1;
+      break;
+    case LOOP_CH2:
+      return LOOP_LED_LOOP_2;
+      break;
+    case LOOP_CH3:
+      return LOOP_LED_LOOP_3;
+      break;
+    default:
+      break;
   }
 }
 
@@ -248,8 +272,8 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       break;
     case LOOP_UPDATE_TURN_ON:
-      hmi_turn_on_led_loop(pin_index);
       loop_turn_on(pin_index);
+      hmi_led_turn_on(control_led_loop(pin_index));
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_PERIOD;
       break;
     case LOOP_UPDATE_PERIOD:
@@ -259,8 +283,8 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       break;  
     case LOOP_UPDATE_TURN_OFF:
-      hmi_turn_off_led_loop(pin_index);
       loop_turn_off(pin_index);
+      hmi_led_turn_off(control_led_loop(pin_index));
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES;
       break;
     case LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES:
@@ -309,14 +333,14 @@ void loop_1ms_clock(void)
 void loop_init(void)
 {
   loop_apply_state.loop_pin[0].loop_delay_init = 0;
-  loop_apply_state.loop_pin[0].loop_period_turn_on = 400;
+  loop_apply_state.loop_pin[0].loop_period_turn_on = 500;
   loop_apply_state.loop_pin[0].time_restart_between_cycles = 1500;
   loop_apply_state.loop_pin[0].number_of_cycles = 1000;
   loop_apply_state.loop_pin[0].state = 0 ;
 
-  loop_apply_state.loop_pin[1].loop_delay_init = 130;
-  loop_apply_state.loop_pin[1].loop_period_turn_on = 400;
-  loop_apply_state.loop_pin[1].time_restart_between_cycles = 1370;
+  loop_apply_state.loop_pin[1].loop_delay_init = 250;
+  loop_apply_state.loop_pin[1].loop_period_turn_on = 500;
+  loop_apply_state.loop_pin[1].time_restart_between_cycles = 1250;
   loop_apply_state.loop_pin[1].number_of_cycles = 1000;
   loop_apply_state.loop_pin[1].state = 0 ;
 
@@ -340,6 +364,8 @@ void loop_init(void)
 
 void loop_update(void)
 {
+
+  //hmi_led_turn_on(1);
   switch (loop_apply_state.loop_state)
   {
     case LOOP_STATE_INIT:
@@ -349,10 +375,10 @@ void loop_update(void)
     case LOOP_STATE_RUNNING:
 
 
-    loop_apply_update_state(0);
-    loop_apply_update_state(1);
-    loop_apply_update_state(2);
-    loop_apply_update_state(3);
+    //loop_apply_update_state(0);
+   // loop_apply_update_state(1);
+   // loop_apply_update_state(2);
+   // loop_apply_update_state(3);
 
       break;
   

@@ -24,63 +24,41 @@
 
 #define HMI_NUMBER_OF_LEDS 					6
 #define HMI_NUMBER_LOOP_LEDS        4
+#define HMI_NUMBER_PIEZO_PE_LEDS    2
+#define HMI_NUMBER_PIEZO_CONV_LEDS  2
 
 #define hmi_led_pininfo_vector_default_value \
 {                                            \
-  {/*01*/                                    \
+  {/*00_LCE*/                                \
     .GPIO = SENSE_1_LED_GPIO_Port,           \
     .PinMask = SENSE_1_LED_Pin,              \
   }                                          \
   ,                                          \
-  {/*02*/                                    \
+  {/*01_PZ/PPE*/                             \
     .GPIO = SENSE_2_LED_GPIO_Port,           \
     .PinMask = SENSE_2_LED_Pin,              \
   }                                          \
   ,                                          \
-  {/*03*/                                    \
+  {/*LCS*/                                   \
     .GPIO = SENSE_3_LED_GPIO_Port,           \
     .PinMask = SENSE_3_LED_Pin,              \
   }                                          \
   ,                                          \
-  {/*04*/                                    \
+  {/*LCE/PPS*/                               \
     .GPIO = SENSE_4_LED_GPIO_Port,           \
     .PinMask = SENSE_4_LED_Pin,              \
   }                                          \
   ,                                          \
-  {/*05*/                                    \
+  {/*PZ/PRE*/                                \
     .GPIO = SENSE_5_LED_GPIO_Port,           \
     .PinMask = SENSE_5_LED_Pin,              \
   }                                          \
   ,                                          \
-  {/*06*/                                    \
+  {/*LCS/PRS*/                               \
     .GPIO = SENSE_6_LED_GPIO_Port,           \
     .PinMask = SENSE_6_LED_Pin,              \
   }                                          \
 }
-
-#define hmi_led_pininfo_vector_loop_value         \
-{                                                 \
-  {/*00*/                                         \
-    .GPIO = SENSE_1_LED_GPIO_Port,                \
-    .PinMask = SENSE_1_LED_Pin,                   \
-  }                                               \
-  ,                                               \
-  {/*02*/                                         \
-    .GPIO = SENSE_3_LED_GPIO_Port,                \
-    .PinMask = SENSE_3_LED_Pin,                   \
-  }                                               \
-  ,                                               \
-  {/*03*/                                         \
-    .GPIO = SENSE_4_LED_GPIO_Port,                \
-    .PinMask = SENSE_4_LED_Pin,                   \
-  }                                               \    
-  ,                                               \
-  {/*05*/                                         \
-    .GPIO = SENSE_6_LED_GPIO_Port,                \
-    .PinMask = SENSE_6_LED_Pin,                   \
-  }                                               \
-}
-
 
 /******************************************************************************/
 

@@ -375,10 +375,10 @@ void loop_update(void)
     case LOOP_STATE_RUNNING:
 
 
-    //loop_apply_update_state(0);
-   // loop_apply_update_state(1);
-   // loop_apply_update_state(2);
-   // loop_apply_update_state(3);
+    loop_apply_update_state(0);
+   loop_apply_update_state(1);
+    loop_apply_update_state(2);
+    loop_apply_update_state(3);
 
       break;
   

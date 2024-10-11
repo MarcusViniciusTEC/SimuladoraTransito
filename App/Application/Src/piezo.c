@@ -229,7 +229,6 @@ void piezo_update_parameters(uint8_t pin_index, piezo_mode_t piezo_mode)
    }
 }
 
-
 /******************************************************************************/
 
 void piezo_1ms_clock(void)
@@ -245,8 +244,8 @@ void piezo_init(void)
 {
    // piezo_init_pin();
   piezo_apply_state.piezo_pin[0].delay_init = 0;
-  piezo_apply_state.piezo_pin[0].period_turn_on = 10;
-  piezo_apply_state.piezo_pin[0].time_restart_between_cycles = 1000;
+  piezo_apply_state.piezo_pin[0].period_turn_on = 3;
+  piezo_apply_state.piezo_pin[0].time_restart_between_cycles = 50;
   piezo_apply_state.piezo_pin[0].number_of_cycles = 1000;
   piezo_apply_state.piezo_pin[0].state = 0 ;
 

@@ -80,6 +80,17 @@ static void piezo_1ms_delay_restart(void)
 
 /******************************************************************************/
 
+void piezo_received_parameters(uint8_t pin_index, piezo_pin_data_t piezo_pin_data_par, piezo_mode_t piezo_mode_par)
+{
+    piezo_apply_state.piezo_pin[pin_index].delay_init = piezo_pin_data_par.delay_init;
+    piezo_apply_state.piezo_pin[pin_index].period_turn_on = piezo_pin_data_par.period_turn_on;
+    piezo_apply_state.piezo_pin[pin_index].time_restart_between_cycles = piezo_pin_data_par.time_restart_between_cycles;
+    piezo_apply_state.piezo_pin[pin_index].number_of_cycles = piezo_pin_data_par.number_of_cycles;
+    piezo_apply_state.piezo_pin[pin_index].state = 0;
+}
+
+/******************************************************************************/
+
 uint8_t control_led_piezo(uint8_t piezo_index, piezo_mode_t piezo_mode)
 {
     switch (piezo_index)

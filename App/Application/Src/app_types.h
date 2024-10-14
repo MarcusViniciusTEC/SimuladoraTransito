@@ -3,68 +3,76 @@
 
 /******************************************************************************/
 
+
+
+
+
+/******************************************************************************/
+
+#define NUMBER_OF_LANES_MAX 2
+
+
+typedef enum 
+{
+  UPDATE_LOOP_INIT = 0,
+  UPDATE_LOOP_START,
+  UPDATE_LOOP_SEND_PARAMETERS,
+  UPDATE_LOOP_STATE_SUCESS,
+}lane_loop_state_t;
+
+typedef struct 
+{
+  lane_loop_state_t state;
+  uint16_t velocity_kmh;
+  uint16_t lenght;
+}lane_loop_data_t;
+
+
+
+typedef struct 
+{
+  lane_loop_data_t lane_loop[NUMBER_OF_LANES_MAX];
+  uint8_t state;
+}lane_loop_update_t
+
+
+
 typedef enum
 {
-  APP_STATE_ = 0,
-  APP_NUMBER_OF_STATES
-} app_state_t;
-
-/******************************************************************************/
+  KEY_ON = 0,
+  KEY_OFF
+}key_state_t;
 
 typedef enum
 {
-  APP_MB_REG_INDEX_BOARD_MODEL = 0,
-  APP_MB_REG_INDEX_BOARD_SERIAL_NUMBER_0,
-  APP_MB_REG_INDEX_BOARD_SERIAL_NUMBER_1,
-  APP_MB_REG_INDEX_BOARD_SERIAL_NUMBER_2,
-  APP_MB_REG_INDEX_BOARD_FIRMWARE_MAJOR,
-  APP_MB_REG_INDEX_BOARD_FIRMWARE_MINOR,
-  APP_MB_REG_INDEX_BOARD_TEMPERATURE,
-  APP_MB_REG_INDEX_GPIN,
-  APP_MB_REG_INDEX_GPOUT,
-  APP_MB_NUMBER_OF_REG_INDEXES
-} app_mb_reg_index_t;
+  MODE_PE = 0,
+  MODE_CONV
+}traffic_mode_t;
 
-/******************************************************************************/
+typedef enum
+{
+  DUALLYWEELS_ON = 0,
+  DUALLYWEELS_OFF
+}dually_weels_state_t;
 
 typedef struct
 {
-  uint16_t reg_vector[APP_MB_NUMBER_OF_REG_INDEXES];
-  uint32_t valid_message_received_1ms_timer;
-  uint32_t invalid_message_received_1ms_timer;
-} app_mb_data_t;
+  uint32_t distance_between_axles;
+  uint32_t qtn_axles;
+  uint16_t velocity;
+  uint16_t lenght_max;
+  dually_weels_state_t duallyweels_state;
+}traffic_data_t;
+
 
 /******************************************************************************/
 
-typedef struct
-{
-  uint32_t update_cycle_1ms_timer;
-} app_tmp_data_t;
 
 /******************************************************************************/
 
-// typedef struct
-// {
-// } app_din_data_t;
 
 /******************************************************************************/
 
-typedef struct
-{
-  uint16_t state_mask;
-} app_dout_data_t;
-
-/******************************************************************************/
-
-typedef struct
-{
-     app_state_t state;
-
-    app_mb_data_t mb;
-   app_tmp_data_t tmp;
-   //app_din_data_t din;
-   app_dout_data_t dout;
-} app_data_t;
 
 /******************************************************************************/
 

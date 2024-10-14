@@ -12,6 +12,7 @@
 #define NUMBER_OF_LANES_MAX 2
 
 
+
 typedef enum 
 {
   UPDATE_LOOP_INIT = 0,
@@ -25,6 +26,7 @@ typedef struct
   lane_loop_state_t state;
   uint16_t velocity_kmh;
   uint16_t lenght;
+  uint16_t gap_vehicle;
 }lane_loop_data_t;
 
 
@@ -33,7 +35,7 @@ typedef struct
 {
   lane_loop_data_t lane_loop[NUMBER_OF_LANES_MAX];
   uint8_t state;
-}lane_loop_update_t
+}lane_loop_update_t;
 
 
 

@@ -24,7 +24,7 @@ void loop_init_apply(void);
 void loop_1ms_period_loop(void);
 void loop_1ms_delay_loop(void);
 void loop_1ms_delay_restart(void);
-//void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters);
+void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters);
 
 /******************************************************************************/
 

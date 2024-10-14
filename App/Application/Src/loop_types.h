@@ -8,6 +8,10 @@
 #define LOOP_LED_LOOP_1         2
 #define LOOP_LED_LOOP_2         3
 #define LOOP_LED_LOOP_3         5
+
+#define DISTANCE_BETWEEN_LOOPS_MTS         1
+#define LENGHT_LOOP                        2
+
 typedef enum
 {
   LOOP_AUTO_RESTART_OFF = 0,

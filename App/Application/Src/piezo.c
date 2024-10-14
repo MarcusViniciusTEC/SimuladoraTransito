@@ -274,7 +274,7 @@ void piezo_init(void)
 
 void piezo_update(void)
 {
-    piezo_update_parameters(0, PIEZO_MODE_PE);
+   // piezo_update_parameters(0, PIEZO_MODE_PE);
     //piezo_update_parameters(1, PIEZO_MODE_PE);
    // piezo_update_parameters(2, PIEZO_MODE_PE);
    // piezo_update_parameters(3, PIEZO_MODE_PE);

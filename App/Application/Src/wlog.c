@@ -122,11 +122,19 @@ void wlog(const char *format, ...)
 
 /******************************************************************************/
 
+void wlog_tx(uint8_t token)
+{
+  //LL_USART_TransmitData8(USART1, token);
+}
+
+
+/******************************************************************************/
+
 void wlog_tx_next(void)
 {
     if (wlog_ctrl.tidx != wlog_ctrl.hidx)
     {
-       // wlog_tx((uint8_t)sLogBuffer[wlog_ctrl.tidx]);
+        wlog_tx((uint8_t)sLogBuffer[wlog_ctrl.tidx]);
         INCR_LOG_BUF_INDEX(wlog_ctrl.tidx);
     }
 }

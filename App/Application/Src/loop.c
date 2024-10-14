@@ -376,7 +376,7 @@ void loop_update(void)
 
 
     loop_apply_update_state(0);
-   loop_apply_update_state(1);
+    loop_apply_update_state(1);
     loop_apply_update_state(2);
     loop_apply_update_state(3);
 

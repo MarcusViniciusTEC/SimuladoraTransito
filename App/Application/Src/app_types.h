@@ -3,15 +3,11 @@
 
 /******************************************************************************/
 
-
-
-
+#include "app_cfg.h"
 
 /******************************************************************************/
 
 #define NUMBER_OF_LANES_MAX 2
-
-
 
 typedef enum 
 {
@@ -29,15 +25,11 @@ typedef struct
   uint16_t gap_vehicle;
 }lane_loop_data_t;
 
-
-
 typedef struct 
 {
   lane_loop_data_t lane_loop[NUMBER_OF_LANES_MAX];
   uint8_t state;
 }lane_loop_update_t;
-
-
 
 typedef enum
 {

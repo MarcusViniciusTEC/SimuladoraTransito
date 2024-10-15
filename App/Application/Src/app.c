@@ -107,9 +107,6 @@ void calculate_traffic_paramters(uint8_t lane_index)
 
 
 
-
-
-
 void traffic_lane_loop_update_state(uint8_t lane_index, uint8_t loop_pin_index)
 {
 
@@ -168,7 +165,6 @@ void app_init(void)
     app_lane_loop_update.lane_loop[1].gap_vehicle = 1000;
     app_lane_loop_update.lane_loop[1].lenght = 6;
     app_lane_loop_update.lane_loop[1].velocity_kmh =70;
-
 }
 
 /******************************************************************************/

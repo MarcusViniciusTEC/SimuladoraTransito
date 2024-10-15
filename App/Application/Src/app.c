@@ -59,8 +59,10 @@ void calculate_traffic_paramters(uint8_t lane_index)
    static uint32_t time_gap_loop_in =0 ;
    static uint32_t time_gap_loop_out=0;
 
-    time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(app_lane_loop_update.lane_loop[lane_index].velocity_kmh/3.6/*km/h for ms*/))*100;
-    period_turn_on_channel = time_between_rising_edge_loops + (LENGHT_LOOP + ((app_lane_loop_update.lane_loop[lane_index].velocity_kmh/3.6/*km/h for ms*/)));
+   static uint32_t teste = 0;
+
+    time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(app_lane_loop_update.lane_loop[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
+    period_turn_on_channel = app_lane_loop_update.lane_loop[lane_index].lenght *(77+5);
     time_gap_loop_in = app_lane_loop_update.lane_loop[lane_index].gap_vehicle;
     time_gap_loop_out = app_lane_loop_update.lane_loop[lane_index].gap_vehicle - time_between_rising_edge_loops;
 
@@ -68,7 +70,7 @@ void calculate_traffic_paramters(uint8_t lane_index)
     {
     case UPDATE_LOOP_INIT:
         
-    loop_pin_input.loop_delay_init = 0;
+    loop_pin_input.loop_delay_init = time_between_rising_edge_loops - time_between_rising_edge_loops;
     loop_pin_input.loop_period_turn_on = period_turn_on_channel;
     loop_pin_input.time_restart_between_cycles = time_gap_loop_in;
     loop_pin_input.number_of_cycles = 1000;
@@ -89,12 +91,13 @@ void calculate_traffic_paramters(uint8_t lane_index)
     lane_loop_state = UPDATE_LOOP_START;
 
 
+   // teste = &loop_pin_output->state;
+
         break;
     case UPDATE_LOOP_START:
 
 
-        loop_apply_update_state(0);
-        loop_apply_update_state(1);
+
         break;
     default:
         break;
@@ -163,8 +166,8 @@ void app_1ms_clock(void)
 void app_init(void)
 {
     app_lane_loop_update.lane_loop[1].gap_vehicle = 1000;
-    app_lane_loop_update.lane_loop[1].lenght = 4;
-    app_lane_loop_update.lane_loop[1].velocity_kmh =40;
+    app_lane_loop_update.lane_loop[1].lenght = 6;
+    app_lane_loop_update.lane_loop[1].velocity_kmh =70;
 
 }
 

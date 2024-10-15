@@ -3,26 +3,7 @@
 #include "loop_cfg.h"
 #include "hmi.h"
 
-
 /******************************************************************************/
-
-/*****************************************************************************
-
- ====================== NÃO PAGAR, EXEMPLO DE TRANSITO FUNCIONAL =============
-
-  loop_apply_state.loop_pin[1].loop_delay_init = 0;
-  loop_apply_state.loop_pin[1].loop_period_turn_on = 500;
-  loop_apply_state.loop_pin[1].time_restart_between_cycles = 1500;
-  loop_apply_state.loop_pin[1].number_of_cycles = 1000;
-  loop_apply_state.loop_pin[1].state = init ;
-
-  loop_apply_state.loop_pin[2].loop_delay_init = 250;
-  loop_apply_state.loop_pin[2].loop_period_turn_on = 500;
-  loop_apply_state.loop_pin[2].time_restart_between_cycles = 1250;
-  loop_apply_state.loop_pin[2].number_of_cycles = 1000;
-  loop_apply_state.loop_pin[2].state = init ;
- 
- ******************************************************************************/
 
 volatile uint32_t loop_execution_rate_1ms_timer;
 
@@ -30,8 +11,6 @@ static const loop_pininfo_t loop_pininfo_vector[LOOP_NUMBER_OF_CHANNELS] = loop_
 
 loop_apply_state_t loop_apply_state;
   
-//loop_states_t loop_states = LOOP_STATE_INIT;
-
 /******************************************************************************/
 
 void loop_turn_on(uint8_t index)
@@ -54,18 +33,11 @@ void loop_turn_off(uint8_t index)
 
 void loop_init_apply(void)
 {
-  for(uint16_t loop_index = 0; loop_index <= LOOP_NUMBER_OF_OUTPUTS; loop_index++ )
+  for(uint16_t loop_index = 0; loop_index < LOOP_NUMBER_OF_OUTPUTS; loop_index++ )
   {
-    piezo_turn_off(loop_index);
+    loop_turn_off(loop_index);
   }
 }
-
-/******************************************************************************/
-
-
-
-/******************************************************************************/
-
 
 /******************************************************************************/
 
@@ -73,7 +45,8 @@ void loop_1ms_period_loop(void)
 {
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
-    if(loop_apply_state.loop_pin[loop_index].loop_period_turn_on > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_PERIOD)
+    if(loop_apply_state.loop_pin[loop_index].loop_period_turn_on > 0 && 
+    loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_PERIOD)
     {
       loop_apply_state.loop_pin[loop_index].loop_period_turn_on--;
     }
@@ -86,23 +59,29 @@ void loop_1ms_delay_loop(void)
 {
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
-    if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_INIT)
+    if(loop_apply_state.loop_pin[loop_index].loop_delay_init > 0 && 
+    loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_INIT)
     {
       loop_apply_state.loop_pin[loop_index].loop_delay_init--;
     }
   }
 }
 
+/******************************************************************************/
+
 void loop_1ms_delay_restart(void)
 {
   for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
   {
-    if(loop_apply_state.loop_pin[loop_index].time_restart_between_cycles > 0 && loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES)
+    if(loop_apply_state.loop_pin[loop_index].time_restart_between_cycles > 0 && 
+    loop_apply_state.loop_pin[loop_index].state == LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES)
     {
       loop_apply_state.loop_pin[loop_index].time_restart_between_cycles--;
     }
   }
 }
+
+/******************************************************************************/
 
 uint8_t control_led_loop(uint8_t led_index)
 {
@@ -125,24 +104,7 @@ uint8_t control_led_loop(uint8_t led_index)
   }
 }
 
-
-/******************************************************************
- * 
- * _______________________
- * |                     |
- * |                     |
- * |                     |____________________________
- *
- *             _________________________
- *             |                       |
- *             |                       |
- * ____________|                       |_______________
- * 
- * |-----------|-----------------------|----------------
- *  period/2             PERIOD            DELAY RESTART 
- * 
- * 
- * ****************************************************************/
+/******************************************************************************/
 
 void loop_apply_update_state(uint8_t pin_index)
 {
@@ -239,6 +201,7 @@ void loop_apply_update_state(uint8_t pin_index)
   }
 }
 
+/******************************************************************************/
 
 void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters)
 {
@@ -247,8 +210,6 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
   loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_pin_data_parameters.time_restart_between_cycles;
   loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
   loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
-
-  loop_apply_update_state(pin_index);
 }
 
 /******************************************************************************/
@@ -266,59 +227,24 @@ void loop_1ms_clock(void)
 
 void loop_init(void)
 {
-
-
-  loop_apply_state.loop_pin[2].loop_delay_init = 0;
-  loop_apply_state.loop_pin[2].loop_period_turn_on = 500;
-  loop_apply_state.loop_pin[2].time_restart_between_cycles = 1500;
-  loop_apply_state.loop_pin[2].number_of_cycles = 1000;
-  loop_apply_state.loop_pin[2].state = 0 ;
-
-  loop_apply_state.loop_pin[3].loop_delay_init = 250;
-  loop_apply_state.loop_pin[3].loop_period_turn_on = 500;
-  loop_apply_state.loop_pin[3].time_restart_between_cycles = 1250;
-  loop_apply_state.loop_pin[3].number_of_cycles = 1000;
-  loop_apply_state.loop_pin[3].state = 0 ;
-  
-
- loop_apply_state.loop_state = LOOP_STATE_RUNNING;
+  loop_init_apply();
+  loop_apply_state.loop_state = LOOP_STATE_RUNNING;
 }              
 
 /******************************************************************************/
 
 void loop_update(void)
 {
-
-  //hmi_led_turn_on(1);
   switch (loop_apply_state.loop_state)
   {
-    case LOOP_STATE_INIT:
-
-
-    
-      break;
-
-    case LOOP_STATE_RUNNING:
-  //   loop_apply_state.loop_pin[0].loop_delay_init = 0;
-  // loop_apply_state.loop_pin[0].loop_period_turn_on = 500;
-  // loop_apply_state.loop_pin[0].time_restart_between_cycles = 1500;
-  // loop_apply_state.loop_pin[0].number_of_cycles = 1000;
-  // loop_apply_state.loop_pin[0].state = 0 ;
-
-  // loop_apply_state.loop_pin[1].loop_delay_init = 250;
-  // loop_apply_state.loop_pin[1].loop_period_turn_on = 500;
-  // loop_apply_state.loop_pin[1].time_restart_between_cycles = 1250;
-  // loop_apply_state.loop_pin[1].number_of_cycles = 1000;
-  // loop_apply_state.loop_pin[1].state = 0 ;
-
-
-  //   loop_apply_update_state(0);
-  //   loop_apply_update_state(1);
-  //   //loop_apply_update_state(2);
-  //  // loop_apply_update_state(3);
-
-      break;
-  
+  case LOOP_STATE_INIT:  
+    break;
+  case LOOP_STATE_RUNNING:
+    for(uint8_t pin_index = 0; pin_index < LOOP_NUMBER_OF_CHANNELS; pin_index++)
+    {
+      loop_apply_update_state(pin_index);
+    }
+     break;
   default:
     break;
   }  

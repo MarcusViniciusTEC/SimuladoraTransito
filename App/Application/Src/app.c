@@ -63,6 +63,7 @@ void calculate_traffic_paramters(uint8_t lane_index)
 
     time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(app_lane_loop_update.lane_loop[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
     period_turn_on_channel = app_lane_loop_update.lane_loop[lane_index].lenght *(77+5);
+
     time_gap_loop_in = app_lane_loop_update.lane_loop[lane_index].gap_vehicle;
     time_gap_loop_out = app_lane_loop_update.lane_loop[lane_index].gap_vehicle - time_between_rising_edge_loops;
 

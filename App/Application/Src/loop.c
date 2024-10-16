@@ -205,13 +205,10 @@ void loop_apply_update_state(uint8_t pin_index)
 
 void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters)
 {
-  loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_pin_data_parameters.loop_delay_init;
-  loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_pin_data_parameters.loop_period_turn_on;
-  loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_pin_data_parameters.time_restart_between_cycles;
-  loop_apply_state.loop_pin[pin_index].number_of_cycles = loop_pin_data_parameters.number_of_cycles;
-  loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
+  loop_apply_state.loop_pin[pin_index] = loop_pin_data_parameters;
 }
 
+/******************************************************************************/
 
 void loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
 {

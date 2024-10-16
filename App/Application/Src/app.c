@@ -48,18 +48,18 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 lane_loop_state_t lane_loop_state = UPDATE_LOOP_INIT;;
 
-    static loop_pin_data_t loop_pin_input;
-    static loop_pin_data_t loop_pin_output;
+
 
 
 void calculate_traffic_paramters(uint8_t lane_index)
-{
-   static uint32_t time_between_rising_edge_loops =0 ;
-   static uint32_t period_turn_on_channel =0 ;
-   static uint32_t time_gap_loop_in =0 ;
-   static uint32_t time_gap_loop_out=0;
+{   
+    static loop_pin_data_t loop_pin_input;/*enter*/
+    static loop_pin_data_t loop_pin_output;/*exit*/
 
-   static uint32_t teste = 0;
+    static uint32_t time_between_rising_edge_loops =0 ;
+    static uint32_t period_turn_on_channel =0 ;
+    static uint32_t time_gap_loop_in =0 ;
+    static uint32_t time_gap_loop_out=0;
 
     time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(app_lane_loop_update.lane_loop[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
     period_turn_on_channel = app_lane_loop_update.lane_loop[lane_index].lenght *(77+5);
@@ -69,29 +69,22 @@ void calculate_traffic_paramters(uint8_t lane_index)
     switch (lane_loop_state)
     {
     case UPDATE_LOOP_INIT:
-        
-    loop_pin_input.loop_delay_init = time_between_rising_edge_loops - time_between_rising_edge_loops;
-    loop_pin_input.loop_period_turn_on = period_turn_on_channel;
-    loop_pin_input.time_restart_between_cycles = time_gap_loop_in;
-    loop_pin_input.number_of_cycles = 1000;
-    loop_pin_input.state = 0;
 
-    loop_pin_output.loop_delay_init = time_between_rising_edge_loops;
-    loop_pin_output.loop_period_turn_on = period_turn_on_channel;
-    loop_pin_output.time_restart_between_cycles = time_gap_loop_out;
-    loop_pin_output.number_of_cycles = 1000;
-    loop_pin_output.state = 0;
+        loop_pin_input.loop_delay_init = time_between_rising_edge_loops - time_between_rising_edge_loops;
+        loop_pin_input.loop_period_turn_on = period_turn_on_channel;
+        loop_pin_input.time_restart_between_cycles = time_gap_loop_in;
+        loop_pin_input.number_of_cycles = 1000;
+        loop_pin_input.state = 0;
 
-    
-    loop_received_parameters(0, loop_pin_input);
-    loop_received_parameters(1, loop_pin_output);
+        loop_pin_output.loop_delay_init = time_between_rising_edge_loops;
+        loop_pin_output.loop_period_turn_on = period_turn_on_channel;
+        loop_pin_output.time_restart_between_cycles = time_gap_loop_out;
+        loop_pin_output.number_of_cycles = 1000;
+        loop_pin_output.state = 0;
 
+        loop_group_received_parameters(0, loop_pin_input, loop_pin_output);
 
-
-    lane_loop_state = UPDATE_LOOP_START;
-
-
-   // teste = &loop_pin_output->state;
+        lane_loop_state = UPDATE_LOOP_START;
 
         break;
     case UPDATE_LOOP_START:

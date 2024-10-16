@@ -44,6 +44,12 @@ typedef enum
 
 typedef enum
 {
+  LOOP_GROUP_0 = 0,
+  LOOP_GROUP_1,
+}loop_groups_t;
+
+typedef enum
+{
   LOOP_UPDATE_STATE_INIT = 0,
   LOOP_UPDATE_GET_DELAY,
   LOOP_UPDATE_STATE_START,

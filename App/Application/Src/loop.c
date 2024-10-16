@@ -212,9 +212,25 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
   loop_apply_state.loop_pin[pin_index].state = loop_pin_data_parameters.state;
 }
 
-/******************************************************************************/
-uint8_t index_test;
 
+void loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
+{
+  switch (loop_group)
+  {
+  case LOOP_GROUP_0:
+    loop_apply_state.loop_pin[LOOP_CH0] = loop_enter_par;
+    loop_apply_state.loop_pin[LOOP_CH1] = loop_exit_par;
+    break;
+  case LOOP_GROUP_1:
+    loop_apply_state.loop_pin[LOOP_CH2] = loop_enter_par;
+    loop_apply_state.loop_pin[LOOP_CH3] = loop_exit_par;
+    break;
+  default:
+    break;
+  }
+}
+
+/******************************************************************************/
 
 void loop_1ms_clock(void)
 {

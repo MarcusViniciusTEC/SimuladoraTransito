@@ -25,11 +25,7 @@ typedef struct
   uint16_t gap_vehicle;
 }lane_loop_data_t;
 
-typedef struct 
-{
-  lane_loop_data_t lane_loop[NUMBER_OF_LANES_MAX];
-  uint8_t state;
-}lane_loop_update_t;
+
 
 typedef enum
 {
@@ -53,10 +49,31 @@ typedef struct
 {
   uint32_t distance_between_axles;
   uint32_t qtn_axles;
-  uint16_t velocity;
+  uint16_t velocity_kmh;
   uint16_t lenght_max;
+  uint16_t gap;
+  lane_loop_state_t state;
   dually_weels_state_t duallyweels_state;
 }traffic_data_t;
+
+typedef struct 
+{
+  traffic_data_t lane[NUMBER_OF_LANES_MAX];
+  uint8_t state;
+}traffic_update_t;
+
+
+typedef struct 
+{
+ uint16_t calc_velocity_khh;
+ uint16_t time_between_rising_edge_loops;
+ uint16_t period_turn_on_channel;
+ uint16_t time_gap_enter;
+ uint16_t time_gap_exit;
+
+}traffic_calc_t;
+
+
 
 
 /******************************************************************************/

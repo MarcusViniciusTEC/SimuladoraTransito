@@ -7,7 +7,9 @@
 
 /******************************************************************************/
 
-#define NUMBER_OF_LANES_MAX 2
+//#define NUMBER_OF_LANES_MAX 2
+
+#define TIME_ZERO 0
 
 typedef enum 
 {
@@ -25,7 +27,12 @@ typedef struct
   uint16_t gap_vehicle;
 }lane_loop_data_t;
 
-
+typedef enum
+{
+  LANE_1 = 0,
+  LANE_2,
+  NUMBER_OF_LANES
+}number_of_lanes_t;
 
 typedef enum
 {
@@ -58,20 +65,27 @@ typedef struct
 
 typedef struct 
 {
-  traffic_data_t lane[NUMBER_OF_LANES_MAX];
+  traffic_data_t lane[NUMBER_OF_LANES];
   uint8_t state;
 }traffic_update_t;
 
 
 typedef struct 
 {
- uint16_t calc_velocity_khh;
+ uint16_t velocity_khh;
  uint16_t time_between_rising_edge_loops;
  uint16_t period_turn_on_channel;
  uint16_t time_gap_enter;
  uint16_t time_gap_exit;
 
 }traffic_calc_t;
+
+typedef struct 
+{
+  traffic_calc_t lane[NUMBER_OF_LANES];
+  lane_loop_state_t state;
+}calc_traffic_t;
+
 
 
 

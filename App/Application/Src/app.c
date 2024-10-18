@@ -55,44 +55,42 @@ lane_loop_state_t lane_loop_state = UPDATE_LOOP_INIT;
 
 void calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
-    loop_pin_data_t loop_enter;/*enter*/
-    loop_pin_data_t loop_exit;/*exit*/
+    loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
+    loop_pin_data_t loop_exit[NUMBER_OF_LANES];/*exit*/
 
-    uint32_t time_between_rising_edge_loops =0 ;
-    uint32_t period_turn_on_channel =0 ;
-    uint32_t time_gap_loop_enter =0 ;
-    uint32_t time_gap_loop_exit=0;
+    calc_traffic_t calc_traffic;
 
-    time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
-    period_turn_on_channel = traffic_update.lane[lane_index].lenght_max *(77+5);
-    time_gap_loop_enter = traffic_update.lane[lane_index].gap;
-    time_gap_loop_exit = traffic_update.lane[lane_index].gap - time_between_rising_edge_loops;
+    calc_traffic.lane[lane_index].time_between_rising_edge_loops = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
+    calc_traffic.lane[lane_index].period_turn_on_channel = traffic_update.lane[lane_index].lenght_max *(77+5);
+    calc_traffic.lane[lane_index].time_gap_enter = traffic_update.lane[lane_index].gap;
+    calc_traffic.lane[lane_index].time_gap_exit = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
 
     switch (lane_loop_state)
     {
     case UPDATE_LOOP_INIT:
 
-        loop_enter.loop_delay_init = time_between_rising_edge_loops - time_between_rising_edge_loops;
-        loop_enter.loop_period_turn_on = period_turn_on_channel;
-        loop_enter.time_restart_between_cycles = time_gap_loop_enter;
-        loop_enter.number_of_cycles = 1000;
-        loop_enter.state = 0;
+        loop_enter[lane_index].loop_delay_init = TIME_ZERO;
+        loop_enter[lane_index].loop_period_turn_on = calc_traffic.lane[lane_index].period_turn_on_channel;
+        loop_enter[lane_index].time_restart_between_cycles = calc_traffic.lane[lane_index].time_gap_enter;
+        loop_enter[lane_index].number_of_cycles = 1000;
+        loop_enter[lane_index].state = 0;
 
-        loop_exit.loop_delay_init = time_between_rising_edge_loops;
-        loop_exit.loop_period_turn_on = period_turn_on_channel;
-        loop_exit.time_restart_between_cycles = time_gap_loop_exit;
-        loop_exit.number_of_cycles = 1000;
-        loop_exit.state = 0;
+        loop_exit[lane_index].loop_delay_init = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
+        loop_exit[lane_index].loop_period_turn_on = calc_traffic.lane[lane_index].period_turn_on_channel;
+        loop_exit[lane_index].time_restart_between_cycles = calc_traffic.lane[lane_index].time_gap_exit ;
+        loop_exit[lane_index].number_of_cycles = 1000;
+        loop_exit[lane_index].state = 0;
 
-        loop_group_received_parameters(0, loop_enter, loop_exit);
-        loop_group_received_parameters(1, loop_enter, loop_exit);
+        
 
         lane_loop_state = UPDATE_LOOP_START;
 
 
         break;
     case UPDATE_LOOP_START:
-
+    
+    loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit[lane_index]);
+       
          
 
 
@@ -175,8 +173,12 @@ void app_init(void)
 
 void app_update(void)
 {
-    //calculate_traffic_paramters(0, 0);
-    calculate_traffic_paramters(1, 0);
+
+    for(uint8_t lane_index; lane_index < NUMBER_OF_LANES; lane_index++)
+    {
+        calculate_traffic_paramters(lane_index, 0);
+        lane_loop_state = UPDATE_LOOP_INIT;
+    }
     
 }
 

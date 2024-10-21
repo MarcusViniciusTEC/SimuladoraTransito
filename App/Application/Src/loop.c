@@ -3,6 +3,8 @@
 #include "loop_cfg.h"
 #include "hmi.h"
 
+#include <stdbool.h>
+
 /******************************************************************************/
 
 volatile uint32_t loop_execution_rate_1ms_timer;
@@ -114,9 +116,9 @@ void loop_apply_update_state(uint8_t pin_index)
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_GET_DELAY; 
       break;
     case  LOOP_UPDATE_GET_DELAY :
-      loop_apply_state.loop_pin[pin_index].last_loop_delay_init = loop_apply_state.loop_pin[pin_index].loop_delay_init;
-      loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
-      loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles = loop_apply_state.loop_pin[pin_index].time_restart_between_cycles;
+      loop_apply_state.loop_pin[pin_index].last_loop_delay_init               = loop_apply_state.loop_pin[pin_index].loop_delay_init;
+      loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on           =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
+      //loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles   = loop_apply_state.loop_pin[pin_index].time_restart_between_cycles;
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START; 
       break;
     case LOOP_UPDATE_STATE_START:
@@ -182,9 +184,9 @@ void loop_apply_update_state(uint8_t pin_index)
       loop_apply_state.loop_pin[pin_index].number_of_cycles--;
       if(loop_apply_state.loop_pin[pin_index].number_of_cycles > 0)
       {
-        loop_apply_state.loop_pin[pin_index].loop_delay_init = loop_apply_state.loop_pin[pin_index].last_loop_delay_init;
-        loop_apply_state.loop_pin[pin_index].loop_period_turn_on = loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on;
-        loop_apply_state.loop_pin[pin_index].time_restart_between_cycles = loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles;  
+        //loop_apply_state.loop_pin[pin_index].loop_delay_init              = loop_apply_state.loop_pin[pin_index].last_loop_delay_init;
+        //loop_apply_state.loop_pin[pin_index].loop_period_turn_on          = loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on;
+        //loop_apply_state.loop_pin[pin_index].time_restart_between_cycles  = loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles;  
         loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_SUCESS;
       } 
       else 
@@ -193,7 +195,7 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       break;
     case LOOP_UPDATE_STATE_SUCESS:
-      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
+      //loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       break;
     default :
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
@@ -206,11 +208,12 @@ void loop_apply_update_state(uint8_t pin_index)
 void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_parameters)
 {
   loop_apply_state.loop_pin[pin_index] = loop_pin_data_parameters;
+  
 }
 
 /******************************************************************************/
 
-void loop_group_received_parameters(uint8_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
+bool loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
 {
   switch (loop_group)
   {
@@ -225,7 +228,14 @@ void loop_group_received_parameters(uint8_t loop_group, loop_pin_data_t loop_ent
   default:
     break;
   }
+
+
+  if(loop_apply_state.loop_pin[LOOP_CH0].state == LOOP_UPDATE_STATE_SUCESS)
+  {
+    return LOOP_CYCLE_SUCESS;
+  }
 }
+
 
 /******************************************************************************/
 

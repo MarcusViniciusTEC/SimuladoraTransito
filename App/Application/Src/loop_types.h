@@ -18,6 +18,12 @@ typedef enum
   LOOP_AUTO_RESTART_ON
 } loop_auto_restart_t;
 
+typedef enum
+{
+  LOOP_CYCLE_RUNNING = 0,
+  LOOP_CYCLE_SUCESS
+}loop_state_cycles_t;
+
 typedef struct
 {
   GPIO_TypeDef *GPIO;

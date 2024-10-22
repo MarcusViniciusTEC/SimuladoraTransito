@@ -15,6 +15,7 @@ loop_apply_state_t loop_apply_state;
   
 /******************************************************************************/
 
+
 void loop_turn_on(uint8_t index)
 {
     loop_pininfo_t loop_pininfo;
@@ -116,8 +117,8 @@ void loop_apply_update_state(uint8_t pin_index)
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_GET_DELAY; 
       break;
     case  LOOP_UPDATE_GET_DELAY :
-      loop_apply_state.loop_pin[pin_index].last_loop_delay_init               = loop_apply_state.loop_pin[pin_index].loop_delay_init;
-      loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on           =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
+      //loop_apply_state.loop_pin[pin_index].last_loop_delay_init               = loop_apply_state.loop_pin[pin_index].loop_delay_init;
+      //loop_apply_state.loop_pin[pin_index].last_loop_period_turn_on           =  loop_apply_state.loop_pin[pin_index].loop_period_turn_on;
       //loop_apply_state.loop_pin[pin_index].last_time_restart_between_cycles   = loop_apply_state.loop_pin[pin_index].time_restart_between_cycles;
       loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_START; 
       break;
@@ -195,10 +196,12 @@ void loop_apply_update_state(uint8_t pin_index)
       }
       break;
     case LOOP_UPDATE_STATE_SUCESS:
+
+      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_SUCESS;
       //loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       break;
     default :
-      loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
+      //loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       break;
   }
 }
@@ -215,24 +218,28 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
 
 bool loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
 {
-  switch (loop_group)
+  static bool aux = false;
+  if(aux == false)
   {
-  case LOOP_GROUP_0:
-    loop_apply_state.loop_pin[LOOP_CH0] = loop_enter_par;
-    loop_apply_state.loop_pin[LOOP_CH1] = loop_exit_par;
-    break;
-  case LOOP_GROUP_1:
-    loop_apply_state.loop_pin[LOOP_CH2] = loop_enter_par;
-    loop_apply_state.loop_pin[LOOP_CH3] = loop_exit_par;
-    break;
-  default:
-    break;
+    switch (loop_group)
+    {
+    case LOOP_GROUP_0:
+      loop_apply_state.loop_pin[LOOP_CH0] = loop_enter_par;
+      loop_apply_state.loop_pin[LOOP_CH1] = loop_exit_par;
+      break;
+    case LOOP_GROUP_1:
+      loop_apply_state.loop_pin[LOOP_CH2] = loop_enter_par;
+      loop_apply_state.loop_pin[LOOP_CH3] = loop_exit_par;
+      break;
+    default:
+      break;
+    }
+    aux = true;
   }
 
-
-  if(loop_apply_state.loop_pin[LOOP_CH0].state == LOOP_UPDATE_STATE_SUCESS)
+  if(loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS)
   {
-    return LOOP_CYCLE_SUCESS;
+    return LOOP_UPDATE_STATE_SUCESS;
   }
 }
 

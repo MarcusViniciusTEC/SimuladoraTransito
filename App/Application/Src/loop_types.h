@@ -20,8 +20,8 @@ typedef enum
 
 typedef enum
 {
-  LOOP_CYCLE_RUNNING = 0,
-  LOOP_CYCLE_SUCESS
+  LOOP_GROUP_CYCLE_RUNNING = 0,
+  LOOP_GROUP_CYCLE_SUCESS
 }loop_state_cycles_t;
 
 typedef struct
@@ -67,7 +67,8 @@ typedef enum
   LOOP_UPDATE_TURN_OFF,
   LOOP_UPDATE_TIME,
   LOOP_UPDATE_DELAY_RESTART_BETWEEN_CYCLES,
-  LOOP_UPDATE_STATE_SUCESS
+  LOOP_UPDATE_STATE_SUCESS,
+  LOOP_UPTATE_STATE_STANDBY
 }loop_state_update_t;
 
 typedef struct

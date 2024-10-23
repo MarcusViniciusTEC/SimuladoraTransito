@@ -16,6 +16,7 @@ typedef enum
   LANE_INIT = 0,
   LANE_START,
   LANE_SEND_PARAMETERS,
+  LANE_RECEIVED_STATUS,
   LANE_STATE_SUCESS,
 }lane_state_t;
 
@@ -82,6 +83,8 @@ typedef struct
 typedef struct 
 {
   traffic_calc_t lane[NUMBER_OF_LANES];
+  lane_state_t state;
+
 }calc_traffic_t;
 
 

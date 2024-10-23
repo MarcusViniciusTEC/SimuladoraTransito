@@ -216,7 +216,7 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
 
 /******************************************************************************/
 
-bool loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
+void loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
 {
   static bool aux = false;
   if(aux == false)
@@ -237,11 +237,17 @@ bool loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t lo
     aux = true;
   }
 
-  if(loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS)
-  {
-    return LOOP_UPDATE_STATE_SUCESS;
-  }
+  // if(loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS)
+  // {
+  //   aux = false;
+  //   return LOOP_GROUP_CYCLE_SUCESS;
+  // }
+  // else if(loop_apply_state.loop_pin[LOOP_CH1].state != LOOP_UPDATE_STATE_SUCESS)
+  // {
+  //   return LOOP_GROUP_CYCLE_RUNNING;
+  // }
 }
+
 
 
 /******************************************************************************/

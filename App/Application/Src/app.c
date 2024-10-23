@@ -45,7 +45,7 @@ void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 
 uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 {
-
+    //teste
 }
 
 lane_loop_state_t lane_loop_state = UPDATE_LOOP_INIT;

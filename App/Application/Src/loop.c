@@ -36,9 +36,21 @@ void loop_turn_off(uint8_t index)
 
 void loop_init_apply(void)
 {
-  for(uint16_t loop_index = 0; loop_index < LOOP_NUMBER_OF_OUTPUTS; loop_index++ )
+  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_OUTPUTS; loop_index++ )
   {
     loop_turn_off(loop_index);
+  }
+}
+
+/******************************************************************************/
+
+
+void loop_init_default_par(void)
+{
+  for(uint8_t loop_index = 0; loop_index < LOOP_NUMBER_OF_CHANNELS; loop_index++)
+  {
+    loop_apply_state.loop_pin[loop_index].loop_delay_init = 0;
+    loop_apply_state.loop_pin[loop_index].state = 0;    
   }
 }
 
@@ -111,6 +123,8 @@ uint8_t control_led_loop(uint8_t led_index)
 
 void loop_apply_update_state(uint8_t pin_index)
 {
+  //sl_critical_assign(loop_apply_state.loop_pin[pin_index].state, loop_apply_state.loop_pin[pin_index].state);
+  sl_enter_critical();
   switch (loop_apply_state.loop_pin[pin_index].state)
   { 
     case LOOP_STATE_INIT:
@@ -204,6 +218,7 @@ void loop_apply_update_state(uint8_t pin_index)
       //loop_apply_state.loop_pin[pin_index].state = LOOP_UPDATE_STATE_INIT;
       break;
   }
+  sl_leave_critical();
 }
 
 /******************************************************************************/
@@ -216,32 +231,40 @@ void loop_received_parameters(uint8_t pin_index, loop_pin_data_t loop_pin_data_p
 
 /******************************************************************************/
 
-void loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t loop_enter_par, loop_pin_data_t loop_exit_par)
+uint8_t loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t *loop_enter_par, loop_pin_data_t *loop_exit_par)
 {
+  sl_enter_critical();
   static bool aux = false;
   if(aux == false)
   {
     switch (loop_group)
     {
     case LOOP_GROUP_0:
-      loop_apply_state.loop_pin[LOOP_CH0] = loop_enter_par;
-      loop_apply_state.loop_pin[LOOP_CH1] = loop_exit_par;
+      
+      loop_apply_state.loop_pin[LOOP_CH0] = *loop_enter_par;
+      loop_apply_state.loop_pin[LOOP_CH1] = *loop_exit_par;
+
+      loop_apply_state.loop_pin[LOOP_CH0].state = 0;
+      loop_apply_state.loop_pin[LOOP_CH1].state = 0;
+  
       break;
     case LOOP_GROUP_1:
-      loop_apply_state.loop_pin[LOOP_CH2] = loop_enter_par;
-      loop_apply_state.loop_pin[LOOP_CH3] = loop_exit_par;
+      loop_apply_state.loop_pin[LOOP_CH2] = *loop_enter_par;
+      loop_apply_state.loop_pin[LOOP_CH3] = *loop_exit_par;
       break;
     default:
       break;
     }
     aux = true;
+
+    sl_leave_critical();
   }
 
-  // if(loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS)
-  // {
-  //   aux = false;
-  //   return LOOP_GROUP_CYCLE_SUCESS;
-  // }
+  if(loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS /*&& loop_apply_state.loop_pin[LOOP_CH1].state == LOOP_UPDATE_STATE_SUCESS*/)
+  {
+    aux = false;
+    return LOOP_GROUP_CYCLE_SUCESS;
+  }
   // else if(loop_apply_state.loop_pin[LOOP_CH1].state != LOOP_UPDATE_STATE_SUCESS)
   // {
   //   return LOOP_GROUP_CYCLE_RUNNING;
@@ -264,6 +287,7 @@ void loop_1ms_clock(void)
 void loop_init(void)
 {
   loop_init_apply();
+  loop_init_default_par();
   loop_apply_state.loop_state = LOOP_STATE_RUNNING;
 }              
 
@@ -276,10 +300,13 @@ void loop_update(void)
   case LOOP_STATE_INIT:  
     break;
   case LOOP_STATE_RUNNING:
-    for(uint8_t pin_index = 0; pin_index < LOOP_NUMBER_OF_CHANNELS; pin_index++)
-    {
-      loop_apply_update_state(pin_index);
-    }
+    // for(uint8_t pin_index = 0; pin_index < LOOP_NUMBER_OF_CHANNELS; pin_index++)
+    // {
+    //   loop_apply_update_state(pin_index);
+    // }
+
+      loop_apply_update_state(0);
+      loop_apply_update_state(1);
      break;
   default:
     break;

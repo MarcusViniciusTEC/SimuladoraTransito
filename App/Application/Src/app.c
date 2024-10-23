@@ -49,7 +49,7 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 }
 
-void calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
+uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
     loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
     loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
@@ -69,38 +69,40 @@ void calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
         break;
     case LANE_START:
         
-        loop_enter[lane_index].loop_delay_init              = 0;
+        loop_enter[lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
         loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_enter;
+        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit;
         loop_enter[lane_index].number_of_cycles             = 1;
-        loop_enter[lane_index].state                        = 0;
+       // loop_enter[lane_index].state                        = 0;
 
         loop_exit [lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
         loop_exit [lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
         loop_exit [lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit ;
         loop_exit [lane_index].number_of_cycles             = 1;
-        loop_exit [lane_index].state                        = 0;  
+        //loop_exit [lane_index].state                        = 0;  
 
         calc_traffic.state = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
 
-        loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
+        //sl_enter_critical();
+        loop_group_received_parameters(lane_index, &loop_enter[lane_index], &loop_exit [lane_index]); 
+       // sl_leave_critical();
         calc_traffic.state = LANE_RECEIVED_STATUS;
         break;
         case LANE_RECEIVED_STATUS:
 
-        // state_loop_group = loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit[lane_index]); 
-        // if(state_loop_group == LOOP_GROUP_CYCLE_SUCESS)
-        // {
-        //     calc_traffic.state = LANE_STATE_SUCESS;
-        // }
-        
+        //state_loop_group = loop_group_received_parameters(lane_index, &loop_enter[lane_index], &loop_exit[lane_index]); 
+        if(state_loop_group == LOOP_GROUP_CYCLE_SUCESS)
+        {
+             calc_traffic.state = LANE_STATE_SUCESS;
+             hmi_led_turn_on(5);
+        }  
         break;
     case LANE_STATE_SUCESS:
 
         calc_traffic.state = LANE_INIT;
-        //return LANE_STATE_SUCESS;
+        return LANE_STATE_SUCESS;
         break; 
     default:
         break;
@@ -193,12 +195,7 @@ void app_update(void)
 {
 
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =100;
-        
-    calculate_traffic_paramters(0, 0);
+
 
 
 
@@ -208,21 +205,27 @@ void app_update(void)
     {
     case traffic_1:
 
+        traffic_update.lane[0].gap = 1000;
+        traffic_update.lane[0].lenght_max = 6;
+        traffic_update.lane[0].qtn_axles = 5;
+        traffic_update.lane[0].velocity_kmh =100;
+        
+        key = calculate_traffic_paramters(0, 0);
 
         if( key == LANE_STATE_SUCESS)
         {
-           // traffic_teste  = traffic_2;
+            traffic_teste  = traffic_2;
         }
 
         break;
     case traffic_2:
 
-        // traffic_update.lane[0].gap = 1000;
-        // traffic_update.lane[0].lenght_max = 6;
-        // traffic_update.lane[0].qtn_axles = 5;
-        // traffic_update.lane[0].velocity_kmh =50;
+        traffic_update.lane[0].gap = 1000;
+        traffic_update.lane[0].lenght_max = 6;
+        traffic_update.lane[0].qtn_axles = 5;
+        traffic_update.lane[0].velocity_kmh =50;
 
-        // key =calculate_traffic_paramters(0, 0);
+        key  =calculate_traffic_paramters(0, 0);
 
         if(key == LANE_STATE_SUCESS)
         {

@@ -33,6 +33,7 @@ piezo_pin_data_t app_send_data_piezo;
 traffic_update_t traffic_update;
 calc_traffic_t calc_traffic;
 
+
 /******************************************************************************/
 
 
@@ -49,10 +50,16 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 }
 
+lane_state_t test = LANE_INIT;
+
 uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
     loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
     loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
+
+    calc_traffic_t calc_traffic;
+
+    
  
     calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
     calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
@@ -60,12 +67,12 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
     calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
     
 
-    switch (calc_traffic.state)
+    switch (test)
     {
         static uint8_t state_loop_group;
     case LANE_INIT:
 
-        calc_traffic.state = LANE_START;  
+        test = LANE_START;  
         break;
     case LANE_START:
         
@@ -73,35 +80,31 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
         loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
         loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit;
         loop_enter[lane_index].number_of_cycles             = 1;
-       // loop_enter[lane_index].state                        = 0;
+        loop_enter[lane_index].state                        = 0;
 
         loop_exit [lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
         loop_exit [lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
         loop_exit [lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit ;
         loop_exit [lane_index].number_of_cycles             = 1;
-        //loop_exit [lane_index].state                        = 0;  
+        loop_exit [lane_index].state                        = 0;  
 
-        calc_traffic.state = LANE_SEND_PARAMETERS;
+        test = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
-
-        //sl_enter_critical();
-        loop_group_received_parameters(lane_index, &loop_enter[lane_index], &loop_exit [lane_index]); 
-       // sl_leave_critical();
-        calc_traffic.state = LANE_RECEIVED_STATUS;
+        state_loop_group = state_loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
+        test = LANE_RECEIVED_STATUS;
         break;
         case LANE_RECEIVED_STATUS:
 
-        //state_loop_group = loop_group_received_parameters(lane_index, &loop_enter[lane_index], &loop_exit[lane_index]); 
-        if(state_loop_group == LOOP_GROUP_CYCLE_SUCESS)
-        {
-             calc_traffic.state = LANE_STATE_SUCESS;
-             hmi_led_turn_on(5);
-        }  
+
+             if(state_loop_group)hmi_led_turn_on(5);
+
+             test = LANE_INIT;
+        
         break;
     case LANE_STATE_SUCESS:
 
-        calc_traffic.state = LANE_INIT;
+        //calc_traffic.state = LANE_INIT;
         return LANE_STATE_SUCESS;
         break; 
     default:
@@ -194,49 +197,49 @@ traffic_teste_t traffic_teste  = traffic_1;
 void app_update(void)
 {
 
-
-
-
-
-
-    static uint8_t  key = 0; 
-
-    switch (traffic_teste)
-    {
-    case traffic_1:
-
         traffic_update.lane[0].gap = 1000;
         traffic_update.lane[0].lenght_max = 6;
         traffic_update.lane[0].qtn_axles = 5;
         traffic_update.lane[0].velocity_kmh =100;
         
-        key = calculate_traffic_paramters(0, 0);
+         calculate_traffic_paramters(0, 0);
 
-        if( key == LANE_STATE_SUCESS)
-        {
-            traffic_teste  = traffic_2;
-        }
 
-        break;
-    case traffic_2:
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =50;
 
-        key  =calculate_traffic_paramters(0, 0);
+    // static uint8_t  key = 0; 
 
-        if(key == LANE_STATE_SUCESS)
-        {
-            traffic_teste  = traffic_1;
-        }
+    // switch (traffic_teste)
+    // {
+    // case traffic_1:
 
-        break;
+
+
+    //     if( key == LANE_STATE_SUCESS)
+    //     {
+    //         traffic_teste  = traffic_2;
+    //     }
+
+    //     break;
+    // case traffic_2:
+
+    //     traffic_update.lane[0].gap = 1000;
+    //     traffic_update.lane[0].lenght_max = 6;
+    //     traffic_update.lane[0].qtn_axles = 5;
+    //     traffic_update.lane[0].velocity_kmh =50;
+
+    //     key  =calculate_traffic_paramters(0, 0);
+
+    //     if(key == LANE_STATE_SUCESS)
+    //     {
+    //         traffic_teste  = traffic_1;
+    //     }
+
+    //     break;
     
-    default:
-        break;
-    }
+    // default:
+    //     break;
+    // }
 
 
     // traffic_update.lane[0].gap = 1000;

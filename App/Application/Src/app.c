@@ -36,6 +36,7 @@ calc_traffic_t calc_traffic;
 
 /******************************************************************************/
 
+lane_state_t lane_state = LANE_INIT;
 
 void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 {
@@ -50,35 +51,28 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 }
 
-lane_state_t test = LANE_INIT;
+
 
 uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
-    loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
-    loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
-
+    static loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
+    static loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
     calc_traffic_t calc_traffic;
 
-    
- 
     calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
     calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
     calc_traffic.lane[lane_index].time_gap_enter                    = traffic_update.lane[lane_index].gap;
     calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
     
-
-    switch (test)
+    switch (lane_state)
     {
-        static uint8_t state_loop_group;
     case LANE_INIT:
-
-        test = LANE_START;  
+        lane_state = LANE_START;  
         break;
     case LANE_START:
-        
-        loop_enter[lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
+        loop_enter[lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
         loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit;
+        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_enter;
         loop_enter[lane_index].number_of_cycles             = 1;
         loop_enter[lane_index].state                        = 0;
 
@@ -88,24 +82,20 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
         loop_exit [lane_index].number_of_cycles             = 1;
         loop_exit [lane_index].state                        = 0;  
 
-        test = LANE_SEND_PARAMETERS;
+        lane_state = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
-        state_loop_group = state_loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
-        test = LANE_RECEIVED_STATUS;
+
+        loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
+        lane_state = LANE_RECEIVED_STATUS;
+
         break;
         case LANE_RECEIVED_STATUS:
 
-
-             if(state_loop_group)hmi_led_turn_on(5);
-
-             test = LANE_INIT;
-        
+        lane_state = LANE_INIT;
+        return LANE_STATE_SUCESS;
         break;
     case LANE_STATE_SUCESS:
-
-        //calc_traffic.state = LANE_INIT;
-        return LANE_STATE_SUCESS;
         break; 
     default:
         break;
@@ -196,99 +186,38 @@ traffic_teste_t traffic_teste  = traffic_1;
 
 void app_update(void)
 {
+    static uint8_t aux = 0;
+    switch (traffic_teste)
+    {
+    case traffic_1:
+        traffic_update.lane[0].gap = 1000;
+        traffic_update.lane[0].lenght_max = 6;
+        traffic_update.lane[0].qtn_axles = 5;
+        traffic_update.lane[0].velocity_kmh =20;
+        aux = calculate_traffic_paramters(0, 0);
 
+        if(aux == LANE_STATE_SUCESS)
+        {
+            aux = 0;
+            traffic_teste = traffic_2;
+        }
+        break;
+    case traffic_2:
         traffic_update.lane[0].gap = 1000;
         traffic_update.lane[0].lenght_max = 6;
         traffic_update.lane[0].qtn_axles = 5;
         traffic_update.lane[0].velocity_kmh =100;
-        
-         calculate_traffic_paramters(0, 0);
 
-
-
-
-    // static uint8_t  key = 0; 
-
-    // switch (traffic_teste)
-    // {
-    // case traffic_1:
-
-
-
-    //     if( key == LANE_STATE_SUCESS)
-    //     {
-    //         traffic_teste  = traffic_2;
-    //     }
-
-    //     break;
-    // case traffic_2:
-
-    //     traffic_update.lane[0].gap = 1000;
-    //     traffic_update.lane[0].lenght_max = 6;
-    //     traffic_update.lane[0].qtn_axles = 5;
-    //     traffic_update.lane[0].velocity_kmh =50;
-
-    //     key  =calculate_traffic_paramters(0, 0);
-
-    //     if(key == LANE_STATE_SUCESS)
-    //     {
-    //         traffic_teste  = traffic_1;
-    //     }
-
-    //     break;
-    
-    // default:
-    //     break;
-    // }
-
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // calculate_traffic_paramters(0, 0);
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // calculate_traffic_paramters(0, 0);
-
-    // static uint8_t update = 0; 
-
-    // switch (teste)
-    // {
-    // case 0:
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // teste = 1;
-    //     break;
-    // case 1:
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 2;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =59;
-
-    // calculate_traffic_paramters(0, 0);
-    // lane_loop_state = UPDATE_LOOP_INIT;
-
-    // teste = 2;
-
-    // break;
-
-    // case 2:
-
-    // break;
-
-    // default:
-    //     break;
-    // }
+        aux = calculate_traffic_paramters(0, 0);
+        if(aux == LANE_STATE_SUCESS)
+        {
+            aux = 0;
+            traffic_teste = traffic_1;
+        }
+        break;
+    default:
+        break;
+    }
 
 
     

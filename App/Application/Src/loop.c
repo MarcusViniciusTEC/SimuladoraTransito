@@ -241,11 +241,8 @@ uint8_t loop_group_received_parameters(loop_groups_t loop_group, loop_pin_data_t
     switch (loop_group)
     {
     case LOOP_GROUP_0:
-      loop_apply_state.loop_pin[LOOP_CH0] = loop_exit_par;
+      loop_apply_state.loop_pin[LOOP_CH0] = loop_enter_par;
       loop_apply_state.loop_pin[LOOP_CH1] = loop_exit_par;
-
-      //loop_apply_state.loop_pin[LOOP_CH0].state = 0;
-     // loop_apply_state.loop_pin[LOOP_CH1].state = 0;
       break;
     case LOOP_GROUP_1:
       loop_apply_state.loop_pin[LOOP_CH2] = loop_enter_par;

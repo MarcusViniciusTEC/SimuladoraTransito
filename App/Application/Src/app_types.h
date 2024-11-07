@@ -54,12 +54,12 @@ typedef struct
 
 typedef struct
 {
-  uint32_t distance_between_axles;
-  uint8_t qtn_axles;
-  uint16_t velocity_kmh;
-  uint16_t lenght_max;
-  uint16_t gap;
-  uint8_t state;
+  uint32_t  distance_between_axles;
+  uint8_t   qtn_axles;
+  uint16_t  velocity_kmh;
+  uint16_t  lenght_max;
+  uint16_t  gap;
+  uint8_t   state;
   dually_weels_state_t duallyweels_state;
 }traffic_data_t;
 

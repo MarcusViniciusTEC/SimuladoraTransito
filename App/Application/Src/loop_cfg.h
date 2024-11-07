@@ -3,7 +3,10 @@
 
 #include "main.h"
 
-#define LOOP_NUMBER_OF_OUTPUTS 4
+#define LOOP_NUMBER_OF_OUTPUTS  4
+#define ONE_CYCLE               1
+#define LOOP_CH0_AND_CH1    2
+#define LOOP_CH2_AND_CH3    4
 
 #define loop_pininfo_vector_default_value \
 {                                         \

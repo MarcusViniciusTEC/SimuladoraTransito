@@ -69,7 +69,6 @@ typedef struct
   uint8_t state;
 }traffic_update_t;
 
-
 typedef struct 
 {
   lane_state_t state;
@@ -78,11 +77,11 @@ typedef struct
   uint16_t period_turn_on_channel;
   uint16_t time_gap_enter;
   uint16_t time_gap_exit;
-}traffic_calc_t;
+}traffic_calc_data_t;
 
 typedef struct 
 {
-  traffic_calc_t lane[NUMBER_OF_LANES];
+  traffic_calc_data_t lane[NUMBER_OF_LANES];
   lane_state_t state;
 
 }calc_traffic_t;

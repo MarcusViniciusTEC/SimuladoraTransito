@@ -77,12 +77,10 @@ typedef struct
 {
   piezo_mode_t piezo_mode;
   piezo_state_update_t state;
+  uint16_t control_axles[10];
   uint32_t time_restart_between_cycles;
-  uint32_t last_time_restart_between_cycles;
   uint32_t delay_init;
-  uint32_t last_delay_init;
   uint32_t period_turn_on;
-  uint32_t last_period_turn_on;
   uint16_t number_of_cycles;
 
 }piezo_pin_data_t;

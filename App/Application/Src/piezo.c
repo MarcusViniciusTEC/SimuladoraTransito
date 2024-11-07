@@ -10,6 +10,76 @@ volatile uint32_t piezo_execution_rate_1ms_timer;
 static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_CHANNELS] = piezo_pininfo_vector_default_value;
 static piezo_apply_state_t piezo_apply_state; 
 
+// #define TOTAL_TRANSITOS_SIMULACAO       15
+// #define TOTAL_TIPO_VEICULOS_SIMULACAO   11
+// #define MAXIMO_EIXOS                    9
+
+
+// typedef struct
+// {
+//   uint16_t distancia;    // distancia em relacao ao eixo anterior
+// } eixo_t;
+
+// typedef struct
+// {
+//   uint16_t comprimento;
+
+//   uint8_t total_eixos;
+//   eixo_t eixos[MAXIMO_EIXOS];
+
+//   uint16_t distancia_inicio_eixo;    // distancia do inicio do veiculo ate o primeiro eixo
+//   uint16_t distancia_fim_eixo;    // distancia do ultimo eixo ate o final do veiculo
+// } veiculo_t;
+
+// typedef struct
+// {
+//   uint16_t velocidade;
+
+//   veiculo_t veiculo[TOTAL_TIPO_VEICULOS_SIMULACAO];
+//   uint16_t gap[TOTAL_TIPO_VEICULOS_SIMULACAO];
+
+// } transitos_t;
+
+
+
+
+
+
+// #define END_WHEELS    10
+// #define WHEELS        0
+
+// //CAMINHAO 3 EIXOS
+// //const uint8_t CAMINHAO_3_EIXOS [10] = {WHEELS,5,WHEELS,2,WHEELS,END_WHEELS};
+
+// //const uint8_t CAMINHAO_4_EIXOS [10] = {WHEELS,5,WHEELS,2,WHEELS,2,WHEELS,END_WHEELS};
+
+// transitos_t transito_simulacao[TOTAL_TRANSITOS_SIMULACAO] = { 0 };
+
+// void EXEMPLO(void)
+// {
+//   for (uint8_t i = 0; i < TOTAL_TRANSITOS_SIMULACAO; i++)
+//   {
+//     transito_simulacao[i].velocidade = 10;
+
+    
+
+//     for (uint8_t j = 0; j < TOTAL_TIPO_VEICULOS_SIMULACAO; i++)
+//     {
+//       transito_simulacao[i].veiculo[j].comprimento = 20;
+//       transito_simulacao[i].veiculo[j].distancia_inicio_eixo = 20;
+//       transito_simulacao[i].veiculo[j].distancia_fim_eixo = 20;
+
+//       transito_simulacao[i].veiculo[j].total_eixos = 3;
+
+
+
+//     }
+    
+    
+//   }
+// }
+
+
 /******************************************************************************/
 
 void piezo_turn_on(uint8_t index)
@@ -84,7 +154,7 @@ static void piezo_1ms_delay_restart(void)
 
 void piezo_received_parameters(uint8_t pin_index, piezo_pin_data_t piezo_pin_data_par, piezo_mode_t piezo_mode_par)
 {
-  
+
 }
 
 /******************************************************************************/
@@ -231,11 +301,37 @@ void piezo_1ms_clock(void)
 }     
 
 
-/*piezo axles 
+// void set_axles()
+// {
 
-======= distance axles {1,5,1.5,1.5,1.5}
-*/
+//   static uint8_t teste = 0;
+//   if (teste == 0)
+//     {
+//     for (uint8_t i = 0; i < 11; i++)
+//       {
+//         piezo_apply_state.piezo_pin[0].control_axles[i] = car_test[i];
+//       }
+//       teste = 1;
+//     }
 
+//   for(uint8_t index = 0; index < 10; index++)
+//   {
+//     if(piezo_apply_state.piezo_pin[0].control_axles[index] != END_WHEELS)
+//     {
+//       if(piezo_apply_state.piezo_pin[0].control_axles[index] == WHEELS)
+//       {
+//         piezo_apply_state.piezo_pin[0].delay_init = 30;
+//         piezo_apply_state.piezo_pin[0].number_of_cycles = 1;
+//         piezo_apply_state.piezo_pin[0].period_turn_on = 30;
+//       }
+
+//       if(piezo_apply_state.piezo_pin[0].control_axles[index] != WHEELS)
+//       {
+//         piezo_apply_state.piezo_pin[0].time_restart_between_cycles = piezo_apply_state.piezo_pin[0].control_axles[index]; 
+//       }
+//     }
+//   }
+// }
 /******************************************************************************/
 
 void piezo_init(void)
@@ -247,13 +343,33 @@ void piezo_init(void)
 
 void piezo_update(void)
 {
-  for(uint8_t pin_index = 0; pin_index < PIEZO_NUMBER_OF_CHANNELS; pin_index++)
-  {
-    piezo_apply_update_state(pin_index);
-  }
+
+
+  
+
+  // for(uint8_t pin_index = 0; pin_index < PIEZO_NUMBER_OF_CHANNELS; pin_index++)
+  // {
+  //   piezo_apply_update_state(pin_index);
+  // }
+
+    piezo_apply_update_state(0);
+  
 }                
 
-/******************************************************************************/
+/*******************************
+ * 
+ * 
+ * velocidade
+ * comprimento
+ * gap
+ * qnt_axels = caminhao{};
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * ***********************************************/
 
 void piezo_deinit(void)
 {

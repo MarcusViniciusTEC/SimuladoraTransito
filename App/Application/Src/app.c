@@ -176,10 +176,10 @@ void app_update(void)
         traffic_update.lane[0].qtn_axles = 5;
         traffic_update.lane[0].velocity_kmh =20;
 
-        traffic_update.lane[1].gap = 1000;                                              //tempo entre um carro e outro
+        traffic_update.lane[1].gap = 1000;                                              // tempo entre um carro e outro
         traffic_update.lane[1].lenght_max = 6;                                          // tamanho do carro
         traffic_update.lane[1].qtn_axles = 5;                                           // quantidade de eixos
-        traffic_update.lane[1].velocity_kmh =20;                                        // velocidade
+        traffic_update.lane[1].velocity_kmh =50;                                        // velocidade
 
         aux0 = calculate_traffic_paramters(0, 0);
         aux1 = calculate_traffic_paramters(1, 0);
@@ -215,7 +215,7 @@ void app_update(void)
         traffic_update.lane[0].gap = 1000;
         traffic_update.lane[0].lenght_max = 6;
         traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =50;
+        traffic_update.lane[0].velocity_kmh =30;
 
         traffic_update.lane[1].gap = 1000;
         traffic_update.lane[1].lenght_max = 6;
@@ -245,9 +245,3 @@ void app_deinit(void)
 
 /******************************************************************************/
 
-/**
- * 
- * 
- * axles {8, 20, }
- * 
- * /

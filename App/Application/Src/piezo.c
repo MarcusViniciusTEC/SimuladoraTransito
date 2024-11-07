@@ -8,7 +8,7 @@
 volatile uint32_t piezo_execution_rate_1ms_timer;
 
 static const piezo_pininfo_t piezo_pininfo_vector[PIEZO_NUMBER_OF_CHANNELS] = piezo_pininfo_vector_default_value;
-piezo_apply_state_t piezo_apply_state;
+static piezo_apply_state_t piezo_apply_state; 
 
 /******************************************************************************/
 
@@ -84,12 +84,7 @@ static void piezo_1ms_delay_restart(void)
 
 void piezo_received_parameters(uint8_t pin_index, piezo_pin_data_t piezo_pin_data_par, piezo_mode_t piezo_mode_par)
 {
-    piezo_apply_state.piezo_pin[pin_index].delay_init = piezo_pin_data_par.delay_init;
-    piezo_apply_state.piezo_pin[pin_index].period_turn_on = piezo_pin_data_par.period_turn_on;
-    piezo_apply_state.piezo_pin[pin_index].time_restart_between_cycles = piezo_pin_data_par.time_restart_between_cycles;
-    piezo_apply_state.piezo_pin[pin_index].number_of_cycles = piezo_pin_data_par.number_of_cycles;
-    piezo_apply_state.piezo_pin[pin_index].piezo_mode = piezo_pin_data_par.piezo_mode;
-    piezo_apply_state.piezo_pin[pin_index].state = piezo_pin_data_par.state;
+  
 }
 
 /******************************************************************************/
@@ -145,9 +140,6 @@ void piezo_apply_update_state(uint8_t pin_index)
       piezo_apply_state.piezo_pin[pin_index].state = PIEZO_UPDATE_GET_DELAY; 
       break;
     case  PIEZO_UPDATE_GET_DELAY :
-      piezo_apply_state.piezo_pin[pin_index].last_delay_init = piezo_apply_state.piezo_pin[pin_index].delay_init;
-      piezo_apply_state.piezo_pin[pin_index].last_period_turn_on = piezo_apply_state.piezo_pin[pin_index].period_turn_on;
-      piezo_apply_state.piezo_pin[pin_index].last_time_restart_between_cycles = piezo_apply_state.piezo_pin[pin_index].time_restart_between_cycles;
       piezo_apply_state.piezo_pin[pin_index].state = PIEZO_UPDATE_STATE_START; 
       break;
     case PIEZO_UPDATE_STATE_START:
@@ -213,9 +205,6 @@ void piezo_apply_update_state(uint8_t pin_index)
       piezo_apply_state.piezo_pin[pin_index].number_of_cycles--;
       if(piezo_apply_state.piezo_pin[pin_index].number_of_cycles > 0)
       {
-        piezo_apply_state.piezo_pin[pin_index].delay_init = piezo_apply_state.piezo_pin[pin_index].last_delay_init;
-        piezo_apply_state.piezo_pin[pin_index].period_turn_on = piezo_apply_state.piezo_pin[pin_index].last_period_turn_on;
-        piezo_apply_state.piezo_pin[pin_index].time_restart_between_cycles = piezo_apply_state.piezo_pin[pin_index].last_time_restart_between_cycles;  
         piezo_apply_state.piezo_pin[pin_index].state = PIEZO_UPDATE_STATE_SUCESS;
       } 
       else 
@@ -240,6 +229,12 @@ void piezo_1ms_clock(void)
     piezo_1ms_delay_restart();
     piezo_1ms_period();
 }     
+
+
+/*piezo axles 
+
+======= distance axles {1,5,1.5,1.5,1.5}
+*/
 
 /******************************************************************************/
 

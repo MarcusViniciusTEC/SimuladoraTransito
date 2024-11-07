@@ -4,10 +4,10 @@
 
 #include "loop_cfg.h"
 
-#define LOOP_LED_LOOP_0         0
-#define LOOP_LED_LOOP_1         2
-#define LOOP_LED_LOOP_2         3
-#define LOOP_LED_LOOP_3         5
+#define LOOP_LED_LOOP_0                         0
+#define LOOP_LED_LOOP_1                         2
+#define LOOP_LED_LOOP_2                         3
+#define LOOP_LED_LOOP_3                         5
 
 #define DISTANCE_BETWEEN_LOOPS_MTS              1
 #define LENGHT_LOOP_MTS                         2

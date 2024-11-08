@@ -25,6 +25,7 @@ volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
+
 static traffic_update_t traffic_update;
 static calc_traffic_t calc_traffic;
 
@@ -53,10 +54,14 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
     static loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
     static loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
 
-    calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
+    /*calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS);
     calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
     calc_traffic.lane[lane_index].time_gap_enter                    = traffic_update.lane[lane_index].gap;
-    calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
+    calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;*/
+
+
+
+
     
     switch (calc_traffic.lane[lane_index].state)
     {
@@ -164,76 +169,7 @@ traffic_teste_t traffic_teste  = traffic_1;
 
 void app_update(void)
 {
-    static uint8_t aux0 = 0;
-    static uint8_t aux1 = 0;
-
-    switch (traffic_teste)
-    {
-    case traffic_1:
-
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =20;
-
-        traffic_update.lane[1].gap = 1000;                                              // tempo entre um carro e outro
-        traffic_update.lane[1].lenght_max = 6;                                          // tamanho do carro
-        traffic_update.lane[1].qtn_axles = 5;                                           // quantidade de eixos
-        traffic_update.lane[1].velocity_kmh =50;                                        // velocidade
-
-        aux0 = calculate_traffic_paramters(0, 0);
-        aux1 = calculate_traffic_paramters(1, 0);
-
-        if(aux0 == LANE_STATE_SUCESS && aux1 == LANE_STATE_SUCESS)
-        {
-            traffic_teste = traffic_2;
-        }
-
-        break;
-    case traffic_2:
-
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =100;
-
-        traffic_update.lane[1].gap = 1000;
-        traffic_update.lane[1].lenght_max = 6;
-        traffic_update.lane[1].qtn_axles = 5;
-        traffic_update.lane[1].velocity_kmh =100;
-
-        aux0 = calculate_traffic_paramters(0, 0);
-        aux1 = calculate_traffic_paramters(1, 0);
-
-        if(aux0 == LANE_STATE_SUCESS && aux1 == LANE_STATE_SUCESS)
-        {
-            traffic_teste = traffic_3;
-        }
-        break;
-    case traffic_3:
-
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =30;
-
-        traffic_update.lane[1].gap = 1000;
-        traffic_update.lane[1].lenght_max = 6;
-        traffic_update.lane[1].qtn_axles = 5;
-        traffic_update.lane[1].velocity_kmh =50;
-
-        aux0 = calculate_traffic_paramters(0, 0);
-        aux1 = calculate_traffic_paramters(1, 0);
-
-        if(aux0 == LANE_STATE_SUCESS && aux1 == LANE_STATE_SUCESS)
-        {
-            traffic_teste = traffic_1;
-        }
-        break;
-
-    default:
-        break;
-    }
+ 
 }
 
 /******************************************************************************/

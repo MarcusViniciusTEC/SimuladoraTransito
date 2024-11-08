@@ -26,7 +26,7 @@ volatile uint32_t app_execution_rate_1ms_timer;
 /******************************************************************************/
 
 
-static traffic_update_t traffic_update;
+static traffic_update_t traffic_update[NUMBER_OF_SIMULATION];
 static calc_traffic_t calc_traffic;
 
 
@@ -54,33 +54,20 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
     static loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
     static loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
 
-    /*calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS);
-    calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
-    calc_traffic.lane[lane_index].time_gap_enter                    = traffic_update.lane[lane_index].gap;
-    calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;*/
 
 
-
-
-    
     switch (calc_traffic.lane[lane_index].state)
     {
     case LANE_INIT:
         calc_traffic.lane[lane_index].state = LANE_START;  
         break;
     case LANE_START:
-        loop_enter[lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-        loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_enter;
-
-        loop_exit [lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-        loop_exit [lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_exit [lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit ;
 
         calc_traffic.lane[lane_index].state = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
         uint8_t aux[NUMBER_OF_LANES] = {0};
+
         aux[lane_index] = loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
         if(aux[lane_index] == LOOP_GROUP_CYCLE_SUCESS)
         {
@@ -94,7 +81,8 @@ uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
     default:
         break;
     }
-}
+
+ }
 
 
 
@@ -152,23 +140,50 @@ void app_1ms_clock(void)
 
 void app_init(void)
 {
-    calc_traffic.lane[0].state = LANE_INIT;
-    calc_traffic.lane[1].state = LANE_INIT;           
+        for (uint16_t index_traffic = 0; index_traffic < NUMBER_OF_SIMULATION; index_traffic++)
+    {
+        traffic_update[index_traffic].velocity_khm  = 40;
+
+        for(uint8_t index_gap = 0; index_gap < NUMBER_OF_TYPES_VEHICLE; index_gap ++)
+        {
+            traffic_update[index_traffic].gap[index_gap] = 20;
+        }
+
+        for (uint8_t index_vehicle = 0; index_vehicle < NUMBER_OF_TYPES_VEHICLE; index_vehicle++)
+        {
+            traffic_update[index_traffic].vehicle[index_vehicle].lengh_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].axles_init_distance_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].axles_end_distance_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].total_axles = 6;
+
+            for(uint8_t index_axles = 0; index_axles <= NUMBER_OF_MAX_AXLES; index_axles++)
+            {
+                traffic_update[index_traffic].vehicle[index_vehicle].axles->last_distance_axles_mts[index_axles] = 2;
+            }
+        }
+        
+    }
+    
+
 }
 
 /******************************************************************************/
 
-typedef enum 
-{
-    traffic_1 = 0,
-    traffic_2,
-    traffic_3
-}traffic_teste_t;
+/// traffic_update.lane[0].velocity_kmh =50;
 
-traffic_teste_t traffic_teste  = traffic_1;
+// typedef enum 
+// {
+//     traffic_1 = 0,
+//     traffic_2,
+//     traffic_3
+// }traffic_teste_t;
+
+// traffic_teste_t traffic_teste  = traffic_1;
 
 void app_update(void)
 {
+
+
  
 }
 

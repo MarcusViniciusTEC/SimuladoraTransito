@@ -61,7 +61,7 @@ static piezo_apply_state_t piezo_apply_state;
 //   {
 //     transito_simulacao[i].velocidade = 10;
 
-    
+    //gg
 
 //     for (uint8_t j = 0; j < TOTAL_TIPO_VEICULOS_SIMULACAO; i++)
 //     {

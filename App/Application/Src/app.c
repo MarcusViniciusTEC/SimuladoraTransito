@@ -46,7 +46,7 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 }
 
-
+// necessario mudar calc
 
 uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   

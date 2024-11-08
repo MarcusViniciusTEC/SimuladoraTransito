@@ -25,8 +25,8 @@ volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
-static traffic_update_t traffic_update;
-static calc_traffic_t calc_traffic;
+static traffic_t traffic;
+//static calc_traffic_t calc_traffic;
 
 
 /******************************************************************************/
@@ -50,45 +50,73 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
-    static loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
-    static loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
+    static loop_pin_data_t loop_enter;
+    static loop_pin_data_t loop_exit ;
 
-    calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
-    calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
-    calc_traffic.lane[lane_index].time_gap_enter                    = traffic_update.lane[lane_index].gap;
-    calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-    
-    switch (calc_traffic.lane[lane_index].state)
+
+    static piezo_pin_data_t piezo_enter;
+
+    switch (traffic.lane[lane_index].state)
     {
     case LANE_INIT:
-        calc_traffic.lane[lane_index].state = LANE_START;  
+        traffic.lane[lane_index].state = LANE_CALC;  
         break;
-    case LANE_START:
-        loop_enter[lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-        loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_enter;
+    case LANE_CALC:
 
-        loop_exit [lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-        loop_exit [lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_exit [lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit ;
+        uint16_t calc_velocity_kmh;
+        calc_velocity_kmh = (((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS)/(traffic.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000);
 
-        calc_traffic.lane[lane_index].state = LANE_SEND_PARAMETERS;
+        loop_enter.loop_delay_init              = 0;
+        loop_enter.loop_period_turn_on          = traffic.lane[lane_index].lenght_mts *(77+5);
+        loop_enter.time_restart_between_cycles  = traffic.lane[lane_index].gap;
+
+        loop_exit.loop_delay_init               = calc_velocity_kmh;
+        loop_exit.loop_period_turn_on           = traffic.lane[lane_index].lenght_mts *(77+5);
+        loop_exit.time_restart_between_cycles   = traffic.lane[lane_index].gap - (((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP_MTS)/(traffic.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000);
+
+
+        uint8_t buffer_size = sizeof(traffic.lane[lane_index].axles);
+
+        static uint8_t index_axles = 0;
+
+        piezo_enter.delay_init = ((calc_velocity_kmh *traffic.lane[lane_index].axles[0])/100);
+        piezo_enter.period_turn_on = 20;
+        piezo_enter.time_restart_between_cycles = 100;
+        piezo_enter.number_of_cycles = 1;
+        piezo_enter.state = 0;
+
+        if(index_axles > buffer_size)
+        {
+            index_axles = 0;
+        }
+
+        piezo_group_received_parameters(0, piezo_enter, 0);
+
+
+
+        traffic.lane[lane_index].state = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
         uint8_t aux[NUMBER_OF_LANES] = {0};
-        aux[lane_index] = loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
+        aux[lane_index] = loop_group_received_parameters(lane_index, loop_enter, loop_exit); 
         if(aux[lane_index] == LOOP_GROUP_CYCLE_SUCESS)
         {
-            calc_traffic.lane[lane_index].state = LANE_STATE_SUCESS;
+            traffic.lane[lane_index].state = LANE_STATE_SUCESS;
         }
         break;
     case LANE_STATE_SUCESS:
-        calc_traffic.lane[lane_index].state = LANE_INIT;
+        traffic.lane[lane_index].state = LANE_INIT;
         return LANE_STATE_SUCESS;
         break; 
     default:
         break;
     }
+}
+
+
+void calculate_piezo(void)
+{
+
 }
 
 
@@ -147,8 +175,8 @@ void app_1ms_clock(void)
 
 void app_init(void)
 {
-    calc_traffic.lane[0].state = LANE_INIT;
-    calc_traffic.lane[1].state = LANE_INIT;           
+    traffic.lane[0].state = LANE_INIT;
+    traffic.lane[1].state = LANE_INIT;           
 }
 
 /******************************************************************************/
@@ -167,19 +195,23 @@ void app_update(void)
     static uint8_t aux0 = 0;
     static uint8_t aux1 = 0;
 
+    static axles_data_t axles_truck;
+
+
+    uint16_t vector_2axles [2] = {20, 80};
+
     switch (traffic_teste)
     {
     case traffic_1:
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =20;
+        traffic.lane[0].gap = 1000;
+        traffic.lane[0].lenght_mts = 6;
+        traffic.lane[0].axles[NUMBER_OF_AXLES_MAX] = vector_2axles;
+        traffic.lane[0].velocity_kmh =50;
 
-        traffic_update.lane[1].gap = 1000;                                              // tempo entre um carro e outro
-        traffic_update.lane[1].lenght_max = 6;                                          // tamanho do carro
-        traffic_update.lane[1].qtn_axles = 5;                                           // quantidade de eixos
-        traffic_update.lane[1].velocity_kmh =50;                                        // velocidade
+        traffic.lane[1].gap = 1000;                                              
+        traffic.lane[1].lenght_mts = 6;                                          
+        traffic.lane[1].velocity_kmh =50;                                        
 
         aux0 = calculate_traffic_paramters(0, 0);
         aux1 = calculate_traffic_paramters(1, 0);
@@ -192,15 +224,13 @@ void app_update(void)
         break;
     case traffic_2:
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =100;
+        traffic.lane[0].gap = 1000;
+        traffic.lane[0].lenght_mts= 6;
+        traffic.lane[0].velocity_kmh =100;
 
-        traffic_update.lane[1].gap = 1000;
-        traffic_update.lane[1].lenght_max = 6;
-        traffic_update.lane[1].qtn_axles = 5;
-        traffic_update.lane[1].velocity_kmh =100;
+        traffic.lane[1].gap = 1000;
+        traffic.lane[1].lenght_mts = 6;
+        traffic.lane[1].velocity_kmh =100;
 
         aux0 = calculate_traffic_paramters(0, 0);
         aux1 = calculate_traffic_paramters(1, 0);
@@ -212,15 +242,13 @@ void app_update(void)
         break;
     case traffic_3:
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =30;
+        traffic.lane[0].gap = 1000;
+        traffic.lane[0].lenght_mts = 6;
+        traffic.lane[0].velocity_kmh =30;
 
-        traffic_update.lane[1].gap = 1000;
-        traffic_update.lane[1].lenght_max = 6;
-        traffic_update.lane[1].qtn_axles = 5;
-        traffic_update.lane[1].velocity_kmh =50;
+        traffic.lane[1].gap = 1000;
+        traffic.lane[1].lenght_mts = 6;
+        traffic.lane[1].velocity_kmh =30;
 
         aux0 = calculate_traffic_paramters(0, 0);
         aux1 = calculate_traffic_paramters(1, 0);

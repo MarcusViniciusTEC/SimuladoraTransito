@@ -11,10 +11,24 @@
 
 #define TIME_ZERO 0
 
+
+typedef enum
+{
+  AXLE_1 = 0U,
+  AXLE_2,
+  AXLE_3,
+  AXLE_4,
+  AXLE_5,
+  AXLE_7,
+  AXLE_8,
+  AXLE_9,
+  NUMBER_OF_AXLES_MAX
+}axles_id_t;
+
 typedef enum 
 {
   LANE_INIT = 0,
-  LANE_START,
+  LANE_CALC,
   LANE_SEND_PARAMETERS,
   LANE_RECEIVED_STATUS,
   LANE_STATE_SUCESS,
@@ -52,14 +66,22 @@ typedef struct
   uint16_t gap_vehicle;
 }lane_loop_data_t;
 
+
+typedef struct 
+{
+  uint8_t     qnt;
+  axles_id_t  axles_id_t;
+  uint8_t     last_distance_axle[NUMBER_OF_AXLES_MAX]; 
+}axles_data_t;
+
 typedef struct
 {
-  uint32_t  distance_between_axles;
-  uint8_t   qtn_axles;
-  uint16_t  velocity_kmh;
-  uint16_t  lenght_max;
-  uint16_t  gap;
-  uint8_t   state;
+  uint16_t        axles[NUMBER_OF_AXLES_MAX];
+  uint8_t         weight_ton;
+  uint16_t        velocity_kmh;
+  uint16_t        lenght_mts;
+  uint16_t        gap;
+  uint8_t         state;
   dually_weels_state_t duallyweels_state;
 }traffic_data_t;
 
@@ -67,23 +89,21 @@ typedef struct
 {
   traffic_data_t lane[NUMBER_OF_LANES];
   uint8_t state;
-}traffic_update_t;
+}traffic_t;
 
 typedef struct 
 {
   lane_state_t state;
-  uint16_t velocity_khh;
   uint16_t time_between_rising_edge_loops;
   uint16_t period_turn_on_channel;
   uint16_t time_gap_enter;
   uint16_t time_gap_exit;
-}traffic_calc_data_t;
+}calc_traffic_data_t;
 
 typedef struct 
 {
-  traffic_calc_data_t lane[NUMBER_OF_LANES];
+  calc_traffic_data_t lane[NUMBER_OF_LANES];
   lane_state_t state;
-
 }calc_traffic_t;
 
 

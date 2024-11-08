@@ -4,13 +4,13 @@
 
 #include "loop_cfg.h"
 
-#define LOOP_LED_LOOP_0         0
-#define LOOP_LED_LOOP_1         2
-#define LOOP_LED_LOOP_2         3
-#define LOOP_LED_LOOP_3         5
+#define LOOP_LED_LOOP_0                         0
+#define LOOP_LED_LOOP_1                         2
+#define LOOP_LED_LOOP_2                         3
+#define LOOP_LED_LOOP_3                         5
 
-#define DISTANCE_BETWEEN_LOOPS_MTS         1
-#define LENGHT_LOOP                        2
+#define DISTANCE_BETWEEN_LOOPS_MTS              1
+#define LENGHT_LOOP_MTS                         2
 
 typedef enum
 {
@@ -35,7 +35,6 @@ typedef enum
   LOOP_STATE_INIT = 0,
   LOOP_STATE_RUNNING,
   LOOP_NUMBER_OF_STATES
-
 }loop_data_t;
 
 typedef enum
@@ -45,13 +44,13 @@ typedef enum
   LOOP_CH2,
   LOOP_CH3,
   LOOP_NUMBER_OF_CHANNELS
-
 }loop_channes_t;
 
 typedef enum
 {
   LOOP_GROUP_0 = 0,
   LOOP_GROUP_1,
+  NUMBER_OF_GROUPS
 }loop_groups_t;
 
 typedef enum
@@ -73,22 +72,17 @@ typedef enum
 
 typedef struct
 {
+  uint16_t loop_delay_init;
+  uint16_t loop_period_turn_on;
+  uint16_t time_restart_between_cycles;
+  uint8_t number_of_cycles;
   loop_state_update_t state;
-  uint32_t time_restart_between_cycles;
-  uint32_t last_time_restart_between_cycles;
-  uint32_t loop_delay_init;
-  uint32_t last_loop_delay_init;
-  uint32_t loop_period_turn_on;
-  uint32_t last_loop_period_turn_on;
-  uint16_t number_of_cycles;
-
 }loop_pin_data_t;
 
 typedef struct
 {
   loop_pin_data_t loop_pin[LOOP_NUMBER_OF_OUTPUTS]; 
   loop_data_t loop_state;
-
 }loop_apply_state_t;
 
 

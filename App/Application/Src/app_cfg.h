@@ -3,6 +3,10 @@
 
 /******************************************************************************/
 
+
+#define ONE_CICLYE          1   
+
+
 #define APP_ID_MODE_GPIO_PORT       nMODE_ID_1_GPIO_Port
 #define APP_ID_MODE_GPIO_PIN        nMODE_ID_1_Pin
 

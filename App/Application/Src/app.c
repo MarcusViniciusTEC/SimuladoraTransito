@@ -25,16 +25,14 @@ volatile uint32_t app_execution_rate_1ms_timer;
 
 /******************************************************************************/
 
-piezo_pin_data_t app_send_data_piezo;
-//loop_pin_data_t app_send_data_loop;
 
-//lane_loop_update_t app_lane_loop_update;
+static traffic_update_t traffic_update[NUMBER_OF_SIMULATION];
+static calc_traffic_t calc_traffic;
 
-traffic_update_t traffic_update;
-calc_traffic_t calc_traffic;
 
 /******************************************************************************/
 
+lane_state_t lane_state = LANE_INIT;
 
 void app_set_address_and_mode (uint8_t addres, uint8_t mode)
 {
@@ -49,64 +47,42 @@ uint16_t ms_for_khm(uint16_t khm, uint16_t ms)
 
 }
 
-void calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
+
+
+uint8_t calculate_traffic_paramters(uint8_t lane_index, traffic_mode_t mode)
 {   
-    loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
-    loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
- 
-    calc_traffic.lane[lane_index].time_between_rising_edge_loops    = ((DISTANCE_BETWEEN_LOOPS_MTS + LENGHT_LOOP)/(traffic_update.lane[lane_index].velocity_kmh/3.6/*km/h for ms*/))*1000;
-    calc_traffic.lane[lane_index].period_turn_on_channel            = traffic_update.lane[lane_index].lenght_max *(77+5);
-    calc_traffic.lane[lane_index].time_gap_enter                    = traffic_update.lane[lane_index].gap;
-    calc_traffic.lane[lane_index].time_gap_exit                     = traffic_update.lane[lane_index].gap - calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-    
+    static loop_pin_data_t loop_enter[NUMBER_OF_LANES];/*enter*/
+    static loop_pin_data_t loop_exit [NUMBER_OF_LANES];/*exit*/
 
-    switch (calc_traffic.state)
+
+
+    switch (calc_traffic.lane[lane_index].state)
     {
-        static uint8_t state_loop_group;
     case LANE_INIT:
-
-        calc_traffic.state = LANE_START;  
+        calc_traffic.lane[lane_index].state = LANE_START;  
         break;
     case LANE_START:
-        
-        loop_enter[lane_index].loop_delay_init              = 0;
-        loop_enter[lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_enter[lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_enter;
-        loop_enter[lane_index].number_of_cycles             = 1;
-        loop_enter[lane_index].state                        = 0;
 
-        loop_exit [lane_index].loop_delay_init              = calc_traffic.lane[lane_index].time_between_rising_edge_loops;
-        loop_exit [lane_index].loop_period_turn_on          = calc_traffic.lane[lane_index].period_turn_on_channel;
-        loop_exit [lane_index].time_restart_between_cycles  = calc_traffic.lane[lane_index].time_gap_exit ;
-        loop_exit [lane_index].number_of_cycles             = 1;
-        loop_exit [lane_index].state                        = 0;  
-
-        calc_traffic.state = LANE_SEND_PARAMETERS;
+        calc_traffic.lane[lane_index].state = LANE_SEND_PARAMETERS;
         break;
     case LANE_SEND_PARAMETERS:
+        uint8_t aux[NUMBER_OF_LANES] = {0};
 
-        loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
-        calc_traffic.state = LANE_RECEIVED_STATUS;
-        break;
-        case LANE_RECEIVED_STATUS:
-
-        // state_loop_group = loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit[lane_index]); 
-        // if(state_loop_group == LOOP_GROUP_CYCLE_SUCESS)
-        // {
-        //     calc_traffic.state = LANE_STATE_SUCESS;
-        // }
-        
+        aux[lane_index] = loop_group_received_parameters(lane_index, loop_enter[lane_index], loop_exit [lane_index]); 
+        if(aux[lane_index] == LOOP_GROUP_CYCLE_SUCESS)
+        {
+            calc_traffic.lane[lane_index].state = LANE_STATE_SUCESS;
+        }
         break;
     case LANE_STATE_SUCESS:
-
-        calc_traffic.state = LANE_INIT;
-        //return LANE_STATE_SUCESS;
+        calc_traffic.lane[lane_index].state = LANE_INIT;
+        return LANE_STATE_SUCESS;
         break; 
     default:
         break;
     }
 
-}
+ }
 
 
 
@@ -120,7 +96,6 @@ void update_state_loop()
 {
 
 }
-
 
 
 void app_read_address_and_mode(void)
@@ -165,127 +140,51 @@ void app_1ms_clock(void)
 
 void app_init(void)
 {
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
+        for (uint16_t index_traffic = 0; index_traffic < NUMBER_OF_SIMULATION; index_traffic++)
+    {
+        traffic_update[index_traffic].velocity_khm  = 40;
 
-    // traffic_update.lane[1].gap = 1000;
-    // traffic_update.lane[1].lenght_max = 2;
-    // traffic_update.lane[1].qtn_axles = 5;
-    // traffic_update.lane[1].velocity_kmh =59;
+        for(uint8_t index_gap = 0; index_gap < NUMBER_OF_TYPES_VEHICLE; index_gap ++)
+        {
+            traffic_update[index_traffic].gap[index_gap] = 20;
+        }
 
-    calc_traffic.state = LANE_INIT;
+        for (uint8_t index_vehicle = 0; index_vehicle < NUMBER_OF_TYPES_VEHICLE; index_vehicle++)
+        {
+            traffic_update[index_traffic].vehicle[index_vehicle].lengh_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].axles_init_distance_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].axles_end_distance_mts = 20;
+            traffic_update[index_traffic].vehicle[index_vehicle].total_axles = 6;
+
+            for(uint8_t index_axles = 0; index_axles <= NUMBER_OF_MAX_AXLES; index_axles++)
+            {
+                traffic_update[index_traffic].vehicle[index_vehicle].axles->last_distance_axles_mts[index_axles] = 2;
+            }
+        }
+        
+    }
+    
+
 }
 
 /******************************************************************************/
 
+/// traffic_update.lane[0].velocity_kmh =50;
 
-typedef enum 
-{
-    traffic_1 = 0,
-    traffic_2,
-}traffic_teste_t;
+// typedef enum 
+// {
+//     traffic_1 = 0,
+//     traffic_2,
+//     traffic_3
+// }traffic_teste_t;
 
-traffic_teste_t traffic_teste  = traffic_1;
+// traffic_teste_t traffic_teste  = traffic_1;
 
 void app_update(void)
 {
 
 
-        traffic_update.lane[0].gap = 1000;
-        traffic_update.lane[0].lenght_max = 6;
-        traffic_update.lane[0].qtn_axles = 5;
-        traffic_update.lane[0].velocity_kmh =100;
-        
-    calculate_traffic_paramters(0, 0);
-
-
-
-    static uint8_t  key = 0; 
-
-    switch (traffic_teste)
-    {
-    case traffic_1:
-
-
-        if( key == LANE_STATE_SUCESS)
-        {
-           // traffic_teste  = traffic_2;
-        }
-
-        break;
-    case traffic_2:
-
-        // traffic_update.lane[0].gap = 1000;
-        // traffic_update.lane[0].lenght_max = 6;
-        // traffic_update.lane[0].qtn_axles = 5;
-        // traffic_update.lane[0].velocity_kmh =50;
-
-        // key =calculate_traffic_paramters(0, 0);
-
-        if(key == LANE_STATE_SUCESS)
-        {
-            traffic_teste  = traffic_1;
-        }
-
-        break;
-    
-    default:
-        break;
-    }
-
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // calculate_traffic_paramters(0, 0);
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // calculate_traffic_paramters(0, 0);
-
-    // static uint8_t update = 0; 
-
-    // switch (teste)
-    // {
-    // case 0:
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 6;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =100;
-
-    // teste = 1;
-    //     break;
-    // case 1:
-
-    // traffic_update.lane[0].gap = 1000;
-    // traffic_update.lane[0].lenght_max = 2;
-    // traffic_update.lane[0].qtn_axles = 5;
-    // traffic_update.lane[0].velocity_kmh =59;
-
-    // calculate_traffic_paramters(0, 0);
-    // lane_loop_state = UPDATE_LOOP_INIT;
-
-    // teste = 2;
-
-    // break;
-
-    // case 2:
-
-    // break;
-
-    // default:
-    //     break;
-    // }
-
-
-    
+ 
 }
 
 /******************************************************************************/
@@ -296,3 +195,4 @@ void app_deinit(void)
 }
 
 /******************************************************************************/
+
